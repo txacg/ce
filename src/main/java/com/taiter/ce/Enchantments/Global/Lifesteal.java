@@ -26,6 +26,7 @@ import org.bukkit.entity.Damageable;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.inventory.ItemStack;
 
 import com.taiter.ce.EffectManager;
@@ -55,7 +56,11 @@ public class Lifesteal extends CEnchantment {
 		
 		if(damager.getGameMode().equals(GameMode.CREATIVE))
 			return;
-		
+
+		if(event.getCause() == EntityDamageEvent.DamageCause.THORNS){
+			return;
+		}
+
 		double newHeal = ((Damageable) damager).getHealth() + heal + level;
 
 		if(newHeal < ((Damageable) damager).getMaxHealth())
