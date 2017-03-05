@@ -248,7 +248,7 @@ public class CEventHandler {
     }
 
     public static void handleEventMain(Player toCheck, ItemStack i, Event e, HashSet<CBasic> list) {
-        if (i != null && i.hasItemMeta()) {
+        if (i != null && i.getType() != Material.AIR && i.hasItemMeta()) {
             ItemMeta im = i.getItemMeta();
             if (!list.isEmpty()) {
 
