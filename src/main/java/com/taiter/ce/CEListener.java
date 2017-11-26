@@ -195,8 +195,11 @@ public class CEListener implements Listener {
                 ItemStack current = event.getCurrentItem();
                 String typeS = current.getType().toString();
                 PlayerInventory inv = event.getWhoClicked().getInventory();
-                if ((typeS.endsWith("HELMET") && inv.getHelmet() == null) || (typeS.endsWith("CHESTPLATE") && inv.getChestplate() == null) || (typeS.endsWith("LEGGINGS") && inv.getLeggings() == null)
-                        || (typeS.endsWith("BOOTS") && inv.getBoots() == null))
+                if ((typeS.endsWith("HELMET") && inv.getHelmet() == null) ||
+                    (typeS.endsWith("CHESTPLATE") && inv.getChestplate() == null) ||
+                    (typeS.endsWith("ELYTRA") && inv.getChestplate() == null) ||
+                    (typeS.endsWith("LEGGINGS") && inv.getLeggings() == null) ||
+                    (typeS.endsWith("BOOTS") && inv.getBoots() == null))
                     CEventHandler.handleArmor((Player) event.getWhoClicked(), event.getCurrentItem(), false, event);
             }
         // ---------------------------------
