@@ -68,7 +68,7 @@ public class Tools {
             return true;
         else if (app == Application.HELMET && mat.endsWith("HELMET"))
             return true;
-        else if (app == Application.ARMOR && (mat.endsWith("HELMET") || mat.endsWith("CHESTPLATE") || mat.endsWith("LEGGINGS") || mat.endsWith("BOOTS")))
+        else if (app == Application.ARMOR && (mat.endsWith("HELMET") || mat.endsWith("CHESTPLATE") || mat.equals(Material.ELYTRA.toString()) || mat.endsWith("LEGGINGS") || mat.endsWith("BOOTS")))
             return true;
         else if (app == Application.TOOL && (mat.endsWith("PICKAXE") || mat.endsWith("SPADE") || mat.endsWith("AXE") || mat.endsWith("HOE")))
             return true;
@@ -572,7 +572,7 @@ public class Tools {
             return Application.BOOTS;
         else if (mat.endsWith("HELMET"))
             return Application.HELMET;
-        else if (mat.endsWith("BOOTS") || mat.endsWith("LEGGINGS") || mat.endsWith("CHESTPLATE") || mat.endsWith("HELMET"))
+        else if (mat.endsWith("BOOTS") || mat.endsWith("LEGGINGS") || mat.endsWith("CHESTPLATE") || mat.endsWith("HELMET") || mat.equals(Material.ELYTRA.toString()))
             return Application.ARMOR;
         else if (mat.endsWith("PICKAXE") || mat.endsWith("SPADE") || mat.endsWith("AXE") || mat.endsWith("HOE"))
             return Application.TOOL;
@@ -582,7 +582,7 @@ public class Tools {
     public static boolean isApplicable(ItemStack i, CEnchantment ce) {
         if ((ce.getApplication() == Application.ARMOR && ce.getApplication() != Application.GLOBAL
                 && (i.getType().toString().endsWith("HELMET") || i.getType().toString().endsWith("CHESTPLATE") || i.getType().toString().endsWith("LEGGINGS")
-                        || i.getType().toString().endsWith("BOOTS")))
+                        || i.getType().toString().endsWith("BOOTS") || i.getType().toString().equals(Material.ELYTRA.toString())))
                 || (ce.getApplication() == Application.TOOL && (i.getType().toString().endsWith("PICKAXE") || i.getType().toString().endsWith("SPADE") || i.getType().toString().endsWith("_AXE")
                         || i.getType().toString().endsWith("HOE")))
                 || (ce.getApplication() == Application.HELMET && ce.getApplication() != Application.GLOBAL && i.getType().toString().endsWith("HELMET"))

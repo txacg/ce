@@ -267,7 +267,7 @@ public class CEventHandler {
 
                             for (String s : lore)
                                 if (Tools.isApplicable(i, ce)) {
-
+                                	
                                     if (EnchantManager.containsEnchantment(s, ce)) {
 
                                         int level = EnchantManager.getLevel(s);

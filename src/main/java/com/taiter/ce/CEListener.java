@@ -197,7 +197,7 @@ public class CEListener implements Listener {
                 PlayerInventory inv = event.getWhoClicked().getInventory();
                 if ((typeS.endsWith("HELMET") && inv.getHelmet() == null) ||
                     (typeS.endsWith("CHESTPLATE") && inv.getChestplate() == null) ||
-                    (typeS.endsWith("ELYTRA") && inv.getChestplate() == null) ||
+                    (typeS.equals(Material.ELYTRA.toString()) && inv.getChestplate() == null) ||
                     (typeS.endsWith("LEGGINGS") && inv.getLeggings() == null) ||
                     (typeS.endsWith("BOOTS") && inv.getBoots() == null))
                     CEventHandler.handleArmor((Player) event.getWhoClicked(), event.getCurrentItem(), false, event);
@@ -537,8 +537,11 @@ public class CEListener implements Listener {
                 ItemStack i = p.getItemInHand();
                 String mat = i.getType().toString();
                 PlayerInventory inv = p.getInventory();
-                if ((mat.endsWith("BOOTS") && inv.getBoots() == null) || (mat.endsWith("LEGGINGS") && inv.getLeggings() == null) || (mat.endsWith("CHESTPLATE") && inv.getChestplate() == null)
-                        || (mat.endsWith("HELMET") && inv.getHelmet() == null))
+                if ((mat.endsWith("BOOTS") && inv.getBoots() == null) ||
+                		(mat.endsWith("LEGGINGS") && inv.getLeggings() == null) ||
+                		(mat.endsWith("CHESTPLATE") && inv.getChestplate() == null) ||
+                		(mat.equals(Material.ELYTRA.toString()) && inv.getChestplate() == null) ||
+                		(mat.endsWith("HELMET") && inv.getHelmet() == null))
                     CEventHandler.handleArmor(p, e.getItem(), false, e);
             }
         }
