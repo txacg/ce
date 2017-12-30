@@ -69,7 +69,8 @@ public class Stomp extends CEnchantment {
                                 ((LivingEntity) player).damage(damage, player);
                             else {
                                 player.setLastDamageCause(event);
-                                player.setHealth(0);
+                                player.setHealth(1); //prevent unexpected death(set(0) don't trigger rescue)
+                                player.damage(damage);
                             }
                             event.setCancelled(true);
                         }
