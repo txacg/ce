@@ -20,16 +20,20 @@ package com.taiter.ce.Enchantments.Tool;
 
 
 
+import org.bukkit.Bukkit;
 import org.bukkit.Effect;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.inventory.ItemStack;
 
 import com.taiter.ce.Enchantments.CEnchantment;
+import org.bukkit.inventory.PlayerInventory;
 
+import java.util.Random;
 
 
 public class Smelting extends CEnchantment {
@@ -73,10 +77,23 @@ public class Smelting extends CEnchantment {
 				drop = Material.BRICK;
 			
 			if(drop != null) {
-				itemToDrop = new ItemStack(drop, event.getBlock().getDrops(player.getItemInHand()).size()); //Prevents unallowed tool usage (Wooden Pickaxe -> Diamond Ore)
-				itemToDrop.setDurability(dur);
+				PlayerInventory inventory = player.getInventory();
+				ItemStack mainHand = inventory.getItemInMainHand();
+				switch (drop){
+					case IRON_INGOT:
+					case GOLD_INGOT:
+						b.setType(Material.DIAMOND_ORE);
+						int quantity = quantityDroppedWithBonus(mainHand.getEnchantmentLevel(Enchantment.LOOT_BONUS_BLOCKS),new Random());
+						itemToDrop = new ItemStack(drop, quantity);
+						itemToDrop.setDurability(dur);
+						break;
+					default:
+						itemToDrop = new ItemStack(drop, event.getBlock().getDrops(mainHand).size()); //Prevents unallowed tool usage (Wooden Pickaxe -> Diamond Ore)
+						itemToDrop.setDurability(dur);
+						break;
+				}
 				event.setCancelled(true);
-				player.getWorld().dropItemNaturally(b.getLocation(), itemToDrop);
+				player.getWorld().dropItem(b.getLocation(), itemToDrop); //dropItemNaturally() has a random offset, which is not good :(
 				player.getWorld().playEffect(b.getLocation(), Effect.MOBSPAWNER_FLAMES, 12);
 				b.setType(Material.AIR);
 			}
@@ -88,5 +105,23 @@ public class Smelting extends CEnchantment {
 	@Override
 	public void initConfigEntries() {
 	}
-	
+
+	//custom version
+	public int quantityDroppedWithBonus(int fortune, Random random)
+	{
+		if (fortune > 0)
+		{
+			int i = random.nextInt(fortune + 2) - 1;
+			if (i < 0)
+			{
+				i = 0;
+			}
+
+			return i + 1;
+		}
+		else
+		{
+			return 1;
+		}
+	}
 }
