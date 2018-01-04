@@ -1,15 +1,16 @@
 package com.taiter.ce;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.GameMode;
-import org.bukkit.Location;
-import org.bukkit.Material;
+import com.taiter.ce.CBasic.Trigger;
+import com.taiter.ce.CItems.CItem;
+import com.taiter.ce.CItems.HookshotBow;
+import com.taiter.ce.CItems.NecromancersStaff;
+import com.taiter.ce.CItems.RocketBoots;
+import com.taiter.ce.EffectManager.ParticleEffect;
+import com.taiter.ce.Enchantments.Bow.Volley;
+import com.taiter.ce.Enchantments.CEnchantment;
+import com.taiter.ce.Enchantments.CEnchantment.Application;
+import com.taiter.ce.Enchantments.EnchantManager;
+import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -29,16 +30,10 @@ import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
-import com.taiter.ce.CBasic.Trigger;
-import com.taiter.ce.EffectManager.ParticleEffect;
-import com.taiter.ce.CItems.CItem;
-import com.taiter.ce.CItems.HookshotBow;
-import com.taiter.ce.CItems.NecromancersStaff;
-import com.taiter.ce.CItems.RocketBoots;
-import com.taiter.ce.Enchantments.CEnchantment;
-import com.taiter.ce.Enchantments.CEnchantment.Application;
-import com.taiter.ce.Enchantments.EnchantManager;
-import com.taiter.ce.Enchantments.Bow.Volley;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
 
 /*
  * This file is part of Custom Enchantments
@@ -58,30 +53,28 @@ import com.taiter.ce.Enchantments.Bow.Volley;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class CEventHandler {
+public class CEventHandler extends BukkitRunnable{
 
     private static boolean stackEnchantments = Main.config.getBoolean("Global.Runecrafting.CanStackEnchantments");
     private static boolean disenchanting = Main.config.getBoolean("Global.Runecrafting.Disenchanting");
     private static boolean transform = Main.config.getBoolean("Global.Runecrafting.TransformationEffect");
 
-    public static void handleArmor(Player toCheck, ItemStack toAdd, Boolean remove, Event event) {
-        if (toAdd != null && toAdd.getType() != Material.AIR && toAdd.hasItemMeta() && toAdd.getItemMeta().hasLore())
-            for (String s : toAdd.getItemMeta().getLore())
+    public static void handleArmor(Player player, ItemStack item) {
+        if (item != null && item.getType() != Material.AIR && item.hasItemMeta() && item.getItemMeta().hasLore())
+            for (String s : item.getItemMeta().getLore())
                 for (CBasic c : Main.listener.wearItem) {
-                    if (c instanceof CEnchantment)
+                    if (c instanceof CEnchantment) {
                         if (EnchantManager.containsEnchantment(s, (CEnchantment) c)) {
                             int level = EnchantManager.getLevel(s);
-                            HashMap<PotionEffectType, Integer> potioneffects = c.getPotionEffectsOnWear();
-                            if (potioneffects.size() < 1)
-                                return;
-                            if (remove) {
-                                for (PotionEffectType pt : potioneffects.keySet())
-                                    if (toCheck.hasPotionEffect(pt))
-                                        toCheck.removePotionEffect(pt);
-                            } else
-                                for (PotionEffectType pt : potioneffects.keySet())
-                                    toCheck.addPotionEffect(new PotionEffect(pt, 600000, potioneffects.get(pt) + level - 2), true);
+                            for (PotionEffectType pt : c.getPotionEffectsOnWear().keySet()) {
+                                int effectLevel = c.getPotionEffectsOnWear().get(pt) + level - 2;
+                                PotionEffect effect = player.getPotionEffect(pt);
+                                if (effect == null || effect.getAmplifier() < effectLevel || effect.getDuration() <= 240) {
+                                    player.addPotionEffect(new PotionEffect(pt, 320, effectLevel), true);
+                                }
+                            }
                         }
+                    }
                 }
     }
 
@@ -742,5 +735,16 @@ public class CEventHandler {
                 inv.setItem(2, new ItemStack(Material.AIR));
             }
         }.runTaskLater(Main.plugin, 2);
+    }
+
+    @Override
+    public void run() {
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            if (!player.isDead()) {
+                for (ItemStack item : player.getInventory().getArmorContents()) {
+                    handleArmor(player, item);
+                }
+            }
+        }
     }
 }

@@ -183,27 +183,6 @@ public class CEListener implements Listener {
             return;
         }
 
-        // -------Armor wear handling--------
-        if (event.getView().getTopInventory().getType().equals(InventoryType.CRAFTING) || event.getView().getTopInventory().getType().equals(InventoryType.CREATIVE))
-            if (event.getSlotType() == SlotType.ARMOR && event.getClick() != ClickType.DOUBLE_CLICK) {
-                CEventHandler.handleArmor((Player) event.getWhoClicked(), event.getCurrentItem(), true, event);
-                CEventHandler.handleArmor((Player) event.getWhoClicked(), event.getCursor(), false, event);
-                if (event.getCursor() == null)
-                    CEventHandler.handleArmor((Player) event.getWhoClicked(), event.getCurrentItem(), false, event);
-
-            } else if (event.getClick() == ClickType.SHIFT_LEFT) {
-                ItemStack current = event.getCurrentItem();
-                String typeS = current.getType().toString();
-                PlayerInventory inv = event.getWhoClicked().getInventory();
-                if ((typeS.endsWith("HELMET") && inv.getHelmet() == null) ||
-                    (typeS.endsWith("CHESTPLATE") && inv.getChestplate() == null) ||
-                    (typeS.equals(Material.ELYTRA.toString()) && inv.getChestplate() == null) ||
-                    (typeS.endsWith("LEGGINGS") && inv.getLeggings() == null) ||
-                    (typeS.endsWith("BOOTS") && inv.getBoots() == null))
-                    CEventHandler.handleArmor((Player) event.getWhoClicked(), event.getCurrentItem(), false, event);
-            }
-        // ---------------------------------
-
         if (event.getCurrentItem() == null || event.getCurrentItem().getType().equals(Material.AIR))
             return;
 
@@ -531,19 +510,6 @@ public class CEListener implements Listener {
                         return;
                     }
                 }
-
-            // Check if the player has put armor on by rightclicking
-            if (p.getItemInHand().getType() != Material.AIR) {
-                ItemStack i = p.getItemInHand();
-                String mat = i.getType().toString();
-                PlayerInventory inv = p.getInventory();
-                if ((mat.endsWith("BOOTS") && inv.getBoots() == null) ||
-                		(mat.endsWith("LEGGINGS") && inv.getLeggings() == null) ||
-                		(mat.endsWith("CHESTPLATE") && inv.getChestplate() == null) ||
-                		(mat.equals(Material.ELYTRA.toString()) && inv.getChestplate() == null) ||
-                		(mat.endsWith("HELMET") && inv.getHelmet() == null))
-                    CEventHandler.handleArmor(p, e.getItem(), false, e);
-            }
         }
 
         // Sign shop
@@ -673,18 +639,7 @@ public class CEListener implements Listener {
         }
 
     }
-
-    // Check if armor broke for potion effect enchantments
-    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
-    public void PlayerItemBreakEvent(PlayerItemBreakEvent e) {
-
-        for (ItemStack i : e.getPlayer().getInventory().getArmorContents())
-            if (i != null && i.getType() != Material.AIR)
-                if (i.getAmount() == 0)
-                    CEventHandler.handleArmor(e.getPlayer(), e.getBrokenItem(), true, e);
-
-    }
-
+    
     // BLOCKS
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)

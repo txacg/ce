@@ -216,7 +216,7 @@ public final class Main extends JavaPlugin {
                 }
             }, Integer.parseInt(config.getString("Global.Updates.CheckDelay")));
         }
-
+        new CEventHandler().runTaskTimer(this, 1, 7);
     }
 
     @Override
