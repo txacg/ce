@@ -18,9 +18,8 @@ package com.taiter.ce.Enchantments.Tool;
 * along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-import java.util.ArrayList;
-import java.util.List;
-
+import com.taiter.ce.Enchantments.CEnchantment;
+import com.taiter.ce.Tools;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -29,8 +28,8 @@ import org.bukkit.event.Event;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.inventory.ItemStack;
 
-import com.taiter.ce.Tools;
-import com.taiter.ce.Enchantments.CEnchantment;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Explosive extends CEnchantment {
 
@@ -51,7 +50,7 @@ public class Explosive extends CEnchantment {
         BlockBreakEvent event = (BlockBreakEvent) e;
         Player player = event.getPlayer();
 
-        if (!isUsable(player.getItemInHand().getType().toString(), event.getBlock().getType().toString()))
+        if (!isUsable(player.getInventory().getItemInMainHand().getType().toString(), event.getBlock().getType().toString()))
             return;
 
         List<Location> locations = new ArrayList<Location>();

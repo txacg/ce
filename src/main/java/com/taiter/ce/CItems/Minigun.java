@@ -19,11 +19,8 @@ package com.taiter.ce.CItems;
 */
 
 
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Effect;
-import org.bukkit.GameMode;
-import org.bukkit.Material;
+import com.taiter.ce.EffectManager;
+import org.bukkit.*;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
@@ -31,8 +28,6 @@ import org.bukkit.event.entity.EntityShootBowEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.scheduler.BukkitRunnable;
-
-import com.taiter.ce.EffectManager;
 
 
 public class Minigun extends CItem {
@@ -70,25 +65,25 @@ public class Minigun extends CItem {
 				
 				
 				int lArrows = ArrowCountPerVolley;
-				ItemStack last = player.getItemInHand();
+				ItemStack last = player.getInventory().getItemInMainHand();
 				
 				@Override
 				public void run() {
-					if (lArrows > 0) {
-						if(player.getItemInHand().hasItemMeta() && player.getItemInHand().getItemMeta().equals(last.getItemMeta())) {
+					if (player.isOnline() && !player.isDead() && lArrows > 0) {
+						if (player.getInventory().getItemInMainHand().hasItemMeta() && player.getInventory().getItemInMainHand().getItemMeta().equals(last.getItemMeta())) {
 							if (player.getGameMode().equals(GameMode.CREATIVE) || player.getInventory().contains(Material.ARROW, 1)) {
 								if (!player.getGameMode().equals(GameMode.CREATIVE)) {
 									if(last.getDurability() < 380) {
 										
 										last.setDurability((short) (last.getDurability() + 1));
-										last = player.getItemInHand();
+										last = player.getInventory().getItemInMainHand();
 										
 									} else {
 										
 										ItemStack brokenItem = new ItemStack(Material.AIR);
-										player.setItemInHand(brokenItem);
+										player.getInventory().setItemInMainHand(brokenItem);
 										player.getWorld().playEffect(player.getLocation(), Effect.ZOMBIE_DESTROY_DOOR, 10);
-										EffectManager.playSound(player.getLocation(), "ENTITY_ITEM_BREAK", 0.4f, 0f);
+										EffectManager.playSound(player.getLocation(), Sound.ENTITY_ITEM_BREAK, 0.4f, 0f);
 										removeLock(player);
 										this.cancel();
 										

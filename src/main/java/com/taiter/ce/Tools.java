@@ -18,19 +18,18 @@ package com.taiter.ce;
 * along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Random;
-import java.util.Set;
-
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Color;
-import org.bukkit.FireworkEffect;
+import com.sk89q.worldguard.bukkit.RegionContainer;
+import com.sk89q.worldguard.bukkit.RegionQuery;
+import com.sk89q.worldguard.protection.flags.DefaultFlag;
+import com.sk89q.worldguard.protection.flags.Flag;
+import com.sk89q.worldguard.protection.flags.StateFlag;
+import com.taiter.ce.CBasic.Trigger;
+import com.taiter.ce.CItems.CItem;
+import com.taiter.ce.Enchantments.CEnchantment;
+import com.taiter.ce.Enchantments.CEnchantment.Application;
+import com.taiter.ce.Enchantments.EnchantManager;
+import org.bukkit.*;
 import org.bukkit.FireworkEffect.Type;
-import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.entity.Damageable;
 import org.bukkit.entity.Firework;
 import org.bukkit.entity.Player;
@@ -42,15 +41,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import com.sk89q.worldguard.protection.GlobalRegionManager;
-import com.sk89q.worldguard.protection.flags.DefaultFlag;
-import com.sk89q.worldguard.protection.flags.Flag;
-import com.sk89q.worldguard.protection.flags.StateFlag;
-import com.taiter.ce.CBasic.Trigger;
-import com.taiter.ce.CItems.CItem;
-import com.taiter.ce.Enchantments.CEnchantment;
-import com.taiter.ce.Enchantments.CEnchantment.Application;
-import com.taiter.ce.Enchantments.EnchantManager;
+import java.util.*;
 
 public class Tools {
 
@@ -485,23 +476,24 @@ public class Tools {
             return true;
 
         if (Main.getWorldGuard() != null) {
-            GlobalRegionManager grm = Main.getWorldGuard().getGlobalRegionManager();
+            RegionContainer grm = Main.getWorldGuard().getRegionContainer();
 
             if (grm == null)
                 return true;
-
+            RegionQuery query = grm.createQuery();
             StateFlag f = null;
+            query.testState(l, p, DefaultFlag.BUILD);
             for (Flag<?> df : DefaultFlag.flagsList)
                 if (fs.equalsIgnoreCase(df.getName()))
                     f = (StateFlag) df;
 
             if (f.equals(DefaultFlag.BUILD)) {
-                if (!grm.canBuild(p, l)) {
+                if (!query.testState(l, p, DefaultFlag.BUILD)) {
                     if (sendMessage)
                         p.sendMessage(ChatColor.RED + "You cannot use this here!");
                     return false;
                 }
-            } else if (!grm.allows(f, l, Main.getWorldGuard().wrapPlayer(p))) {
+            } else if (!query.testState(l, p, f)) {
                 if (sendMessage)
                     p.sendMessage(ChatColor.RED + "You cannot use this here!");
                 return false;

@@ -1,6 +1,7 @@
 package com.taiter.ce.Enchantments.Global;
 
-import org.bukkit.entity.Damageable;
+import org.bukkit.Sound;
+import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
@@ -28,18 +29,19 @@ public class Vampire extends CEnchantment {
 	public void effect(Event e, ItemStack item, int level) {
 		EntityDamageByEntityEvent event = (EntityDamageByEntityEvent) e;
 		Player damager = (Player) event.getDamager();
-		if (!getHasCooldown(damager)) {	
-			double heal = (((Damageable) damager).getHealth() + (event.getDamage() / damageHealFraction));
-			if ( heal < ((Damageable) damager).getMaxHealth()) 
+		if (!getHasCooldown(damager)) {
+			double maxHealth = damager.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue();
+			double heal = (damager.getHealth() + (event.getDamage() / damageHealFraction));
+			if ( heal < maxHealth) 
 				damager.setHealth(heal);
 			 else 
-				damager.setHealth(((Damageable) damager).getMaxHealth());
+				damager.setHealth(maxHealth);
 			int food = (int) (damager.getFoodLevel() + (event.getDamage() / damageHealFraction));
 			if ( food < 20) 
 				damager.setFoodLevel(food);
 			 else 
 				damager.setFoodLevel(20);
-			EffectManager.playSound(damager.getLocation(), "ENTITY_PLAYER_BURP", 0.4f, 1f);
+			EffectManager.playSound(damager.getLocation(), Sound.ENTITY_PLAYER_BURP, 0.4f, 1f);
 			generateCooldown(damager, cooldown);
 		}
 	}

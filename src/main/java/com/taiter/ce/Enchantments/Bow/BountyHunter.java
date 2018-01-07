@@ -19,19 +19,17 @@ package com.taiter.ce.Enchantments.Bow;
 */
 
 
-
+import com.taiter.ce.Enchantments.CEnchantment;
+import com.taiter.ce.Tools;
 import org.bukkit.ChatColor;
-import org.bukkit.Effect;
 import org.bukkit.Material;
+import org.bukkit.Particle;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
 import org.bukkit.event.Event;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.inventory.ItemStack;
-
-import com.taiter.ce.Tools;
-import com.taiter.ce.Enchantments.CEnchantment;
 
 
 
@@ -69,10 +67,10 @@ public class BountyHunter extends CEnchantment {
 		
 		Material bountyDrop = getBounty();
 		
-		for(int i = 10; i>0; i--) {
-			p.getWorld().playEffect(p.getLocation(), Effect.COLOURED_DUST, 10);
-			p.getWorld().playEffect(target.getLocation(), Effect.COLOURED_DUST, 10);
-		}
+			for (int i = 10; i > 0; i--) {
+				p.getWorld().spawnParticle(Particle.REDSTONE, p.getLocation(), 5, 0.3, 0.3, 0.3, 1);
+				p.getWorld().spawnParticle(Particle.REDSTONE, target.getLocation(), 5, 0.3, 0.3, 0.3, 1);
+			}
 		
 		p.getInventory().addItem(new ItemStack(bountyDrop, Tools.random.nextInt(MaximumBounty+level)+1));
 		p.sendMessage(ChatColor.GOLD + "You have collected a bounty on " + target.getName() + "!");

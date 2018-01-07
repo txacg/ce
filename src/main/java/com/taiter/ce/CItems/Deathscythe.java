@@ -3,10 +3,7 @@ package com.taiter.ce.CItems;
 import java.util.List;
 import java.util.Set;
 
-import org.bukkit.ChatColor;
-import org.bukkit.Effect;
-import org.bukkit.Location;
-import org.bukkit.Material;
+import org.bukkit.*;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -88,7 +85,7 @@ public class Deathscythe extends CItem {
 				ents.remove(i);
 		
 		if(ents.isEmpty()) {
-			EffectManager.playSound(loc, "BLOCK_PORTAL_TRAVEL", 0.01f, 100f);
+			EffectManager.playSound(loc, Sound.BLOCK_PORTAL_TRAVEL, 0.01f, 100f);
 			player.sendMessage(ChatColor.DARK_GRAY + "" + ChatColor.ITALIC + "There are no souls nearby");
 			return true;
 		}
@@ -102,7 +99,7 @@ public class Deathscythe extends CItem {
 			for(Entity ent : ents) {
 				Location entLoc = ent.getLocation();
 				if( Math.abs(entLoc.getBlockX() - loc.getBlockX()) < 2 && Math.abs(entLoc.getBlockY() - loc.getBlockY()) < 2 &&Math.abs(entLoc.getBlockZ() - loc.getBlockZ()) < 2) {
-					EffectManager.playSound(ent.getLocation(), "BLOCK_PISTON_EXTEND", 0.1f, 0.3f);
+					EffectManager.playSound(ent.getLocation(), Sound.BLOCK_PISTON_EXTEND, 0.1f, 0.3f);
 					player.sendMessage(ChatColor.DARK_GRAY + "" + ChatColor.ITALIC + "You caught a Soul!");
 					player.setMetadata("ce." + getOriginalName(), new FixedMetadataValue(main, ent.getEntityId()));
 					new BukkitRunnable() {
@@ -121,7 +118,7 @@ public class Deathscythe extends CItem {
 		
 
 		player.sendMessage(ChatColor.DARK_GRAY + "" + ChatColor.ITALIC + "You missed!");
-		EffectManager.playSound(loc, "BLOCK_PORTAL_TRAVEL", 0.01f, 100f);
+		EffectManager.playSound(loc, Sound.BLOCK_PORTAL_TRAVEL, 0.01f, 100f);
 			
 		}
 		return true;

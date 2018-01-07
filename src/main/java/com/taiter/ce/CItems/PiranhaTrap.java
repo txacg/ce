@@ -23,11 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import org.bukkit.ChatColor;
-import org.bukkit.Effect;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.World;
+import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
@@ -114,7 +110,7 @@ public class PiranhaTrap extends CItem {
 					public void run() {
 						if (maxTime >= 0) {
 							for(Item fish : fishList) {
-								EffectManager.playSound(fish.getLocation(), "BLOCK_WATER_AMBIENT", 0.1f, 0.5f);
+								EffectManager.playSound(fish.getLocation(), Sound.BLOCK_WATER_AMBIENT, 0.1f, 0.5f);
 								Vector vel = new Vector(0.02 * (rand.nextInt(2) == 1 ? -1 : 1), 0.4, 0.02 * (rand.nextInt(2) == 1 ? -1 : 1));
 								fish.setVelocity(vel);
 							}

@@ -1,5 +1,6 @@
 package com.taiter.ce.Enchantments.Global;
 
+import org.bukkit.Sound;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.Event;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
@@ -26,7 +27,7 @@ public class Blind extends CEnchantment {
     public void effect(Event e, ItemStack item, int level) {
         EntityDamageByEntityEvent event = (EntityDamageByEntityEvent) e;
         LivingEntity target = (LivingEntity) event.getEntity();
-        EffectManager.playSound(target.getLocation(), "ENTITY_PLAYER_HURT", 1f, 0.4f);
+        EffectManager.playSound(target.getLocation(), Sound.ENTITY_PLAYER_HURT, 1f, 0.4f);
         target.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, duration + 20 * level, 0));
 
     }

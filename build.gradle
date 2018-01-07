@@ -30,5 +30,8 @@ repositories {
 dependencies {
     compile 'org.spigotmc:spigot-api:1.12-R0.1-SNAPSHOT'
     compile 'net.milkbowl.vault:VaultAPI:1.6'
-    compile 'com.sk89q:worldguard:6.1'
+    compile 'com.sk89q.worldguard:worldguard-legacy:6.2'
+}
+compileJava {
+    options.compilerArgs += ["-Xlint:deprecation", "-Xlint:unchecked"]
 }

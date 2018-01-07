@@ -21,7 +21,7 @@ package com.taiter.ce.Enchantments.Boots;
 import java.util.List;
 
 import org.bukkit.Effect;
-import org.bukkit.entity.Damageable;
+import org.bukkit.Sound;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -62,11 +62,11 @@ public class Stomp extends CEnchantment {
                                 }
                             }
                             player.getWorld().playEffect(player.getLocation(), Effect.ZOMBIE_DESTROY_DOOR, 5);
-                            EffectManager.playSound(player.getLocation(), "ENTITY_GENERIC_EXPLODE", 1f, 2f);
+                            EffectManager.playSound(player.getLocation(), Sound.ENTITY_GENERIC_EXPLODE, 1f, 2f);
 
                             double damage = event.getDamage() / damageReductionFraction;
-                            if (((Damageable) player).getHealth() - damage > 0)
-                                ((LivingEntity) player).damage(damage, player);
+                            if (player.getHealth() - damage > 0)
+                                player.damage(damage, player);
                             else {
                                 player.setLastDamageCause(event);
                                 player.setHealth(1); //prevent unexpected death(set(0) don't trigger rescue)

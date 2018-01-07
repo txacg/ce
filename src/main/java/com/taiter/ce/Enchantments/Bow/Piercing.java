@@ -27,7 +27,7 @@ import org.bukkit.event.entity.EntityDamageEvent.DamageModifier;
 import org.bukkit.inventory.ItemStack;
 
 import com.taiter.ce.Enchantments.CEnchantment;
-
+@Deprecated //https://www.spigotmc.org/threads/194446/
 public class Piercing extends CEnchantment {
 
     private ItemStack[] emptyArmor = new ItemStack[4];

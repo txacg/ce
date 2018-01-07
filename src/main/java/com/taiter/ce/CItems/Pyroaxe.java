@@ -22,6 +22,7 @@ package com.taiter.ce.CItems;
 import org.bukkit.ChatColor;
 import org.bukkit.Effect;
 import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
@@ -51,7 +52,7 @@ public class Pyroaxe extends CItem {
 		if(e.getDamager() == player && entity.getFireTicks() > 0) {
 			e.setDamage(damageMultiplier * e.getDamage());
 			entity.getWorld().playEffect(entity.getLocation(), Effect.ZOMBIE_DESTROY_DOOR, 10);
-			EffectManager.playSound(entity.getLocation(), "BLOCK_ANVIL_LAND", 1f, 0.001f);
+			EffectManager.playSound(entity.getLocation(), Sound.BLOCK_ANVIL_LAND, 1f, 0.001f);
 			return true;
 		}
 		return false;

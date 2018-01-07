@@ -5,7 +5,6 @@ import com.taiter.ce.CItems.CItem;
 import com.taiter.ce.CItems.HookshotBow;
 import com.taiter.ce.CItems.NecromancersStaff;
 import com.taiter.ce.CItems.RocketBoots;
-import com.taiter.ce.EffectManager.ParticleEffect;
 import com.taiter.ce.Enchantments.Bow.Volley;
 import com.taiter.ce.Enchantments.CEnchantment;
 import com.taiter.ce.Enchantments.CEnchantment.Application;
@@ -85,7 +84,7 @@ public class CEventHandler extends BukkitRunnable{
         for (ItemStack i : toCheck.getInventory().getArmorContents())
             if (i != null && i.getType() != Material.AIR)
                 handleEventMain(toCheck, i, e, list);
-        handleEventMain(toCheck, toCheck.getItemInHand(), e, list);
+        handleEventMain(toCheck, toCheck.getInventory().getItemInMainHand(), e, list);
 
         if (Boolean.parseBoolean(Main.config.getString("Global.Logging.Enabled")) && Boolean.parseBoolean(Main.config.getString("Global.Logging.LogEvents"))) {
             long timeF = (System.currentTimeMillis() - time);
@@ -184,7 +183,7 @@ public class CEventHandler extends BukkitRunnable{
         im.setLore(lore);
         i.setItemMeta(im);
 
-        EffectManager.playSound(p.getLocation(), "ENTITY_FIREWORK_BLAST", 1f, 1f);
+        EffectManager.playSound(p.getLocation(), Sound.ENTITY_FIREWORK_BLAST, 1f, 1f);
 
     }
 
@@ -234,7 +233,9 @@ public class CEventHandler extends BukkitRunnable{
             for (String ench : enchantments) {
                 String[] enchantment = ench.split(" : ");
                 CEnchantment ce = EnchantManager.getInternalEnchantment(enchantment[0]);
-                ce.effect(e, toCheck.getItemInHand(), Integer.parseInt(enchantment[1]));
+                if (ce != null) {
+                    ce.effect(e, toCheck.getInventory().getItemInMainHand(), Integer.parseInt(enchantment[1]));
+                }
             }
             e.getDamager().removeMetadata("ce.bow.enchantment", Main.plugin);
         }
@@ -287,7 +288,7 @@ public class CEventHandler extends BukkitRunnable{
 
                                                             if (e instanceof EntityDamageByEntityEvent && ((EntityDamageByEntityEvent) e).getDamager() instanceof Player
                                                                     && ce.triggers.contains(Trigger.SHOOT_BOW)
-                                                                    && ((Player) ((EntityDamageByEntityEvent) e).getDamager()).getItemInHand().getType().equals(Material.BOW))
+                                                                    && ((Player) ((EntityDamageByEntityEvent) e).getDamager()).getInventory().getItemInMainHand().getType().equals(Material.BOW))
                                                                 continue;
 
                                                             ce.effect(e, i, level);
@@ -471,8 +472,8 @@ public class CEventHandler extends BukkitRunnable{
                             }
 
                         if (moneyCost > 0)
-                            if (Main.econ.getBalance(p.getName()) >= moneyCost)
-                                Main.econ.withdrawPlayer(p.getName(), moneyCost);
+                            if (Main.econ.getBalance(p) >= moneyCost)
+                                Main.econ.withdrawPlayer(p, moneyCost);
                             else {
                                 p.sendMessage(ChatColor.RED + "You do not have enough money!");
                                 return;
@@ -484,8 +485,8 @@ public class CEventHandler extends BukkitRunnable{
                         im.setLore(lore);
                         result.setItemMeta(im);
                     }
-                    EffectManager.playSound(p.getLocation(), "BLOCK_ANVIL_USE", 1f, 2f);
-                    EffectManager.playSound(p.getLocation(), "ENTITY_FIREWORK_LAUNCH", 1f, 1.5f);
+                    EffectManager.playSound(p.getLocation(), Sound.BLOCK_ANVIL_USE, 1f, 2f);
+                    EffectManager.playSound(p.getLocation(), Sound.ENTITY_FIREWORK_LAUNCH, 1f, 1.5f);
 
                     inv.clear();
 
@@ -519,7 +520,7 @@ public class CEventHandler extends BukkitRunnable{
                                     this.cancel();
                                     return;
                                 }
-                                EffectManager.sendEffect(targets, ParticleEffect.SPELL_MOB, p.getLocation(), new Vector(Math.random() * 2 - 1, Math.random() * 2 - 1, Math.random() * 2 - 1), 1, 100);
+                                EffectManager.sendEffect(targets, Particle.SPELL_MOB, p.getLocation(), new Vector(Math.random() * 2 - 1, Math.random() * 2 - 1, Math.random() * 2 - 1), 1, 100);
                                 transformation.setType(mats[Tools.random.nextInt(mats.length - 1)]);
                                 inv.setItem(2, transformation);
                                 counter--;

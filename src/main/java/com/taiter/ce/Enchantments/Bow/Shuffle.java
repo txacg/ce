@@ -23,6 +23,7 @@ package com.taiter.ce.Enchantments.Bow;
 import org.bukkit.ChatColor;
 import org.bukkit.Effect;
 import org.bukkit.Location;
+import org.bukkit.Sound;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
@@ -60,8 +61,8 @@ public class Shuffle extends CEnchantment {
 		target.teleport(pLoc);
 		p.teleport(tLoc);
 		
-		EffectManager.playSound(tLoc, "ENTITY_ENDERMAN_TELEPORT", 0.4f, 2f);
-		EffectManager.playSound(pLoc, "ENTITY_ENDERMAN_TELEPORT", 0.4f, 2f);
+		EffectManager.playSound(tLoc, Sound.ENTITY_ENDERMEN_TELEPORT, 0.4f, 2f);
+		EffectManager.playSound(pLoc, Sound.ENTITY_ENDERMEN_TELEPORT, 0.4f, 2f);
 
 		
 		for(int i = 10; i>0; i--) {

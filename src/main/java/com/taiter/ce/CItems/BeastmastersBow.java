@@ -21,11 +21,7 @@ package com.taiter.ce.CItems;
 
 import java.util.Random;
 
-import org.bukkit.ChatColor;
-import org.bukkit.Effect;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.World;
+import org.bukkit.*;
 import org.bukkit.entity.CaveSpider;
 import org.bukkit.entity.EnderDragon;
 import org.bukkit.entity.Entity;
@@ -93,7 +89,7 @@ public class BeastmastersBow extends CItem {
 					e.setDamage(e.getDamage()*DamageMultiplication);
 					w.playEffect(loc, Effect.SMOKE, 50);
 					w.playEffect(loc, Effect.MOBSPAWNER_FLAMES, 50);
-					EffectManager.playSound(loc, "BLOCK_PISTON_RETRACT", 1.3f, 3f);
+					EffectManager.playSound(loc, Sound.BLOCK_PISTON_CONTRACT, 1.3f, 3f);
 				return true;
 			} else if (ent instanceof Player) {
 				for(int i = 0; i < MaximumMobs; i++) {
@@ -101,7 +97,7 @@ public class BeastmastersBow extends CItem {
 						w.spawnEntity(loc, rand.nextInt(2) == 1 ? EntityType.SPIDER : EntityType.SLIME);
 						w.playEffect(loc, Effect.MOBSPAWNER_FLAMES, 30);
 						w.playEffect(loc, Effect.SMOKE, 30);
-						EffectManager.playSound(loc, "BLOCK_ANVIL_BREAK", 0.3f, 0.1f);
+						EffectManager.playSound(loc, Sound.BLOCK_ANVIL_BREAK, 0.3f, 0.1f);
 					}
 				}
 			}

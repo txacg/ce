@@ -20,6 +20,8 @@ package com.taiter.ce.CItems;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.Sound;
+import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Damageable;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
@@ -44,21 +46,21 @@ public class HealingShovel extends CItem {
         if (e.getDamager() == player && e.getEntity() instanceof Player) {
             Player damaged = (Player) e.getEntity();
             e.setDamage(0);
-            EffectManager.playSound(damaged.getLocation(), "ENTITY_GENERIC_DRINK", 0.5f, 1f);
-            EffectManager.playSound(damaged.getLocation(), "BLOCK_ANVIL_LAND", 0.5f, 2f);
-            short currentDur = player.getItemInHand().getDurability();
-
-            if (((Damageable) damaged).getHealth() + Heal <= ((Damageable) damaged).getMaxHealth()) {
-                damaged.setHealth(((Damageable) damaged).getHealth() + Heal);
+            EffectManager.playSound(damaged.getLocation(), Sound.ENTITY_GENERIC_DRINK, 0.5f, 1f);
+            EffectManager.playSound(damaged.getLocation(), Sound.BLOCK_ANVIL_LAND, 0.5f, 2f);
+            short currentDur = player.getInventory().getItemInMainHand().getDurability();
+            double maxHealth = damaged.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue();
+            if (damaged.getHealth() + Heal <= maxHealth) {
+                damaged.setHealth(damaged.getHealth() + Heal);
             } else {
-                damaged.setHealth(((Damageable) damaged).getMaxHealth());
+                damaged.setHealth(maxHealth);
             }
 
-            if (currentDur + Heal < player.getItemInHand().getType().getMaxDurability()) {
-                player.getItemInHand().setDurability((short) (currentDur + Heal));
+            if (currentDur + Heal < player.getInventory().getItemInMainHand().getType().getMaxDurability()) {
+                player.getInventory().getItemInMainHand().setDurability((short) (currentDur + Heal));
             } else {
-                player.setItemInHand(new ItemStack(Material.AIR, 1));
-                EffectManager.playSound(player.getLocation(), "ENTITY_ITEM_BREAK", 0.1f, 0.3f);
+                player.getInventory().setItemInMainHand(new ItemStack(Material.AIR));
+                EffectManager.playSound(player.getLocation(), Sound.ENTITY_ITEM_BREAK, 0.1f, 0.3f);
             }
             return true;
         }

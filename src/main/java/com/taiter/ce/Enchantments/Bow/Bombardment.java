@@ -22,6 +22,7 @@ package com.taiter.ce.Enchantments.Bow;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.World;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.FallingBlock;
@@ -83,7 +84,7 @@ public class Bombardment extends CEnchantment {
 					this.cancel();
 				}
 				
-				EffectManager.playSound(l, "ENTITY_ENDERDRAGON_GROWL", Volume, 2f);
+				EffectManager.playSound(l, Sound.ENTITY_ENDERDRAGON_GROWL, Volume, 2f);
 			}
 		}.runTaskTimer(getPlugin(), 0l, 5l);
 		}

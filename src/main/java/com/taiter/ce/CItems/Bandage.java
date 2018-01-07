@@ -21,7 +21,8 @@ package com.taiter.ce.CItems;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
-import org.bukkit.entity.Damageable;
+import org.bukkit.attribute.Attribute;
+import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
@@ -52,7 +53,8 @@ public class Bandage extends CItem {
 	@Override
 	public boolean effect(Event event, Player player) {
 		if(event instanceof PlayerInteractEvent) {
-				if(((Damageable) player).getHealth() != ((Damageable) player).getMaxHealth()) {
+			AttributeInstance attribute = player.getAttribute(Attribute.GENERIC_MAX_HEALTH);
+				if(player.getHealth() != attribute.getValue()) {
 					heal(player);
 					return true;
 				} else
@@ -69,20 +71,23 @@ public class Bandage extends CItem {
 					toHeal = (Player) e.getEntity();
 				}
 			}
-			
-			if(toHeal != null) {
-			  if(!toHeal.hasMetadata("ce." + getOriginalName()))
-				if(((Damageable) toHeal).getHealth() != ((Damageable) toHeal).getMaxHealth()) {
-					heal(toHeal);
-					player.sendMessage(ChatColor.GREEN + "You have applied a bandage on " + toHeal.getName() + ".");
-					toHeal.sendMessage(ChatColor.GREEN + player.getName() + " has applied a bandage on you.");
-					return true;
-				} else
-					player.sendMessage(ChatColor.RED + "Your target does not have any wounds to apply the bandage to!");
-			  else
-				  player.sendMessage(ChatColor.RED + "Your target is already using a bandage!");
-			}
-		}
+
+            if (toHeal != null && !player.isDead()) {
+                double maxHealth = toHeal.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue();
+                if (!toHeal.hasMetadata("ce." + getOriginalName())) {
+                    if (toHeal.getHealth() < maxHealth) {
+                        heal(toHeal);
+                        player.sendMessage(ChatColor.GREEN + "You have applied a bandage on " + toHeal.getName() + ".");
+                        toHeal.sendMessage(ChatColor.GREEN + player.getName() + " has applied a bandage on you.");
+                        return true;
+                    } else {
+                        player.sendMessage(ChatColor.RED + "Your target does not have any wounds to apply the bandage to!");
+                    }
+                } else {
+                    player.sendMessage(ChatColor.RED + "Your target is already using a bandage!");
+                }
+            }
+        }
 		return false;
 	}
 
@@ -102,16 +107,19 @@ public class Bandage extends CItem {
 		new BukkitRunnable() {
 			int localCounter = TotalHealTime;
 			@Override
-			public void run() {
-				if(!p.isDead() && localCounter != 0) {
-					if(((Damageable) p).getHealth() == ((Damageable) p).getMaxHealth() && StopAtFullHealth) {
-						p.sendMessage(ChatColor.GREEN + "Your wounds have fully recovered.");
-						this.cancel();
-					}
-					if(((Damageable) p).getHealth() + healBursts <= ((Damageable) p).getMaxHealth())
-						p.setHealth(((Damageable) p).getHealth() + healBursts);
-					else
-						p.setHealth(((Damageable) p).getMaxHealth());
+            public void run() {
+                if (p.isOnline() && !p.isDead() && localCounter >= 0) {
+                    double maxHealth = p.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue();
+                    if (p.getHealth() == maxHealth && StopAtFullHealth) {
+                        p.sendMessage(ChatColor.GREEN + "Your wounds have fully recovered.");
+                        this.cancel();
+                        return;
+                    }
+                    if (p.getHealth() + healBursts <= maxHealth) {
+                        p.setHealth(p.getHealth() + healBursts);
+                    } else {
+                        p.setHealth(maxHealth);
+                    }
 				localCounter--;
 				} else {
 					p.sendMessage(ChatColor.GREEN + "The bandage has recovered some of your wounds.");

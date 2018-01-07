@@ -23,11 +23,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
-import org.bukkit.ChatColor;
-import org.bukkit.Effect;
-import org.bukkit.GameMode;
-import org.bukkit.Location;
-import org.bukkit.Material;
+import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.SmallFireball;
 import org.bukkit.entity.WitherSkull;
@@ -70,12 +66,12 @@ public class NecromancersStaff extends CItem {
     @Override
     public boolean effect(Event event, Player player) {
         PlayerInteractEvent e = (PlayerInteractEvent) event;
-        ItemMeta im = e.getPlayer().getItemInHand().getItemMeta();
+        ItemMeta im = e.getPlayer().getInventory().getItemInMainHand().getItemMeta();
         List<String> lore = new ArrayList<String>();
         if (!im.hasLore()) {
             lore.add(spells.get(0));
             im.setLore(lore);
-            e.getPlayer().getItemInHand().setItemMeta(im);
+            e.getPlayer().getInventory().getItemInMainHand().setItemMeta(im);
         }
         lore = im.getLore();
         int lastElement = lore.size() - 1;
@@ -91,7 +87,7 @@ public class NecromancersStaff extends CItem {
 
             lore.set(lastElement, nextSpell);
             im.setLore(lore);
-            e.getPlayer().getItemInHand().setItemMeta(im);
+            e.getPlayer().getInventory().getItemInMainHand().setItemMeta(im);
 
             player.sendMessage(ChatColor.GRAY + "Changed Spell to " + nextSpell.split(": ")[1] + ChatColor.GRAY + ".");
             player.getWorld().playEffect(player.getLocation(), Effect.CLICK1, 10);
@@ -133,19 +129,19 @@ public class NecromancersStaff extends CItem {
                         ws.setVelocity(l.getDirection().multiply(2));
                         if (!Main.createExplosions)
                             ws.setMetadata("ce.explosive", new FixedMetadataValue(getPlugin(), null));
-                        EffectManager.playSound(l, "ENTITY_WITHER_IDLE", 0.5f, 10f);
+                        EffectManager.playSound(l, Sound.ENTITY_WITHER_SHOOT, 0.5f, 10f);
                     } else {
-                        EffectManager.playSound(l, "ENTITY_CAT_HISS", 0.3f, 5f);
+                        EffectManager.playSound(l, Sound.ENTITY_CAT_HISS, 0.3f, 5f);
                     }
                 } else if (spell == 1) {
                     player.launchProjectile(SmallFireball.class).setVelocity(l.getDirection().multiply(1.5));
-                    EffectManager.playSound(l, "ENTITY_BLAZE_HIT", 0.2f, 0f);
+                    EffectManager.playSound(l, Sound.ENTITY_BLAZE_SHOOT, 0.2f, 0f);
                 } else if (spell == 2) {
                     Location target = player.getTargetBlock((Set<Material>) null, 20).getLocation();
                     player.getWorld().strikeLightning(target);
                     if (Tools.checkWorldGuard(l, player, "TNT", true))
                         player.getWorld().createExplosion(target, 1);
-                    EffectManager.playSound(target, "ENTITY_ENDERDRAGON_GROWL", 0.5f, 2f);
+                    EffectManager.playSound(target, Sound.ENTITY_ENDERDRAGON_GROWL, 0.5f, 2f);
                 }
 
                 // Generate the cooldown based on the cooldown value

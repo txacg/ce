@@ -18,23 +18,14 @@ package com.taiter.ce;
 * along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.GameMode;
-import org.bukkit.Location;
-import org.bukkit.Material;
+import com.taiter.ce.CItems.CItem;
+import com.taiter.ce.Enchantments.CEnchantment;
+import com.taiter.ce.Enchantments.EnchantManager;
+import net.milkbowl.vault.economy.EconomyResponse;
+import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
-import org.bukkit.entity.Arrow;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.HumanEntity;
-import org.bukkit.entity.Player;
-import org.bukkit.entity.Projectile;
+import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -43,37 +34,20 @@ import org.bukkit.event.block.BlockFromToEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.event.enchantment.EnchantItemEvent;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.entity.EntityDamageEvent;
-import org.bukkit.event.entity.EntityExplodeEvent;
-import org.bukkit.event.entity.EntityShootBowEvent;
-import org.bukkit.event.entity.PlayerDeathEvent;
-import org.bukkit.event.entity.ProjectileHitEvent;
-import org.bukkit.event.entity.ProjectileLaunchEvent;
-import org.bukkit.event.inventory.ClickType;
-import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.event.inventory.InventoryCloseEvent;
-import org.bukkit.event.inventory.InventoryCreativeEvent;
-import org.bukkit.event.inventory.InventoryDragEvent;
-import org.bukkit.event.inventory.InventoryType;
-import org.bukkit.event.inventory.InventoryType.SlotType;
+import org.bukkit.event.entity.*;
+import org.bukkit.event.inventory.*;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerItemBreakEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
-import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.projectiles.ProjectileSource;
 import org.bukkit.util.Vector;
 
-import com.taiter.ce.CItems.CItem;
-import com.taiter.ce.Enchantments.CEnchantment;
-import com.taiter.ce.Enchantments.EnchantManager;
-
-import net.milkbowl.vault.economy.EconomyResponse;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
 
 public class CEListener implements Listener {
 
@@ -287,8 +261,8 @@ public class CEListener implements Listener {
                         double cost = ci.getCost();
                         //Check cost
                         if (Main.hasEconomy && !p.isOp() && cost > 0) {
-                            if (Main.econ.getBalance(p.getName()) >= cost) {
-                                EconomyResponse ecr = Main.econ.withdrawPlayer(p.getName(), cost);
+                            if (Main.econ.getBalance(p) >= cost) {
+                                EconomyResponse ecr = Main.econ.withdrawPlayer(p, cost);
                                 if (ecr.transactionSuccess()) {
                                     p.sendMessage(ChatColor.GREEN + "Purchased " + clickedItem.getItemMeta().getDisplayName() + "" + ChatColor.GREEN + " for " + ChatColor.WHITE + cost + "  "
                                             + ((cost == 1) ? Main.econ.currencyNameSingular() : Main.econ.currencyNamePlural()) + ChatColor.GREEN + "!");
@@ -327,8 +301,8 @@ public class CEListener implements Listener {
                     if (p.getInventory().firstEmpty() != -1) {
                         //Check cost
                         if (Main.hasEconomy && !p.isOp() && cost > 0) {
-                            if (Main.econ.getBalance(p.getName()) >= cost) {
-                                EconomyResponse ecr = Main.econ.withdrawPlayer(p.getName(), cost);
+                            if (Main.econ.getBalance(p) >= cost) {
+                                EconomyResponse ecr = Main.econ.withdrawPlayer(p, cost);
                                 if (ecr.transactionSuccess()) {
                                     p.sendMessage(ChatColor.GREEN + "Purchased " + clickedItem.getItemMeta().getDisplayName() + "" + ChatColor.GREEN + " for " + ChatColor.WHITE + cost + " "
                                             + ((cost == 1) ? Main.econ.currencyNameSingular() : Main.econ.currencyNamePlural()) + ChatColor.GREEN + "!");
@@ -476,7 +450,7 @@ public class CEListener implements Listener {
     // PLAYER
 
     @EventHandler
-    public void PlayerPickupItemEvent(PlayerPickupItemEvent event) {
+    public void onEntityPickupItem(EntityPickupItemEvent event) {
         if (event.getItem().hasMetadata("ce.Volley")) {
             event.getItem().remove();
             event.setCancelled(true);
@@ -497,12 +471,12 @@ public class CEListener implements Listener {
             //Check for runecrafting
             if (useRuneCrafting)
                 if (e.getClickedBlock() != null && e.getClickedBlock().getType().equals(Material.ANVIL)) {
-                    ItemStack i = p.getItemInHand();
+                    ItemStack i = p.getInventory().getItemInMainHand();
                     if (EnchantManager.hasEnchantments(i) || EnchantManager.isEnchantmentBook(i)) {
                         if (!p.hasPermission("ce.*") && !p.hasPermission("ce.runecrafting"))
                             return;
                         e.setCancelled(true);
-                        p.setItemInHand(new ItemStack(Material.AIR));
+                        p.getInventory().setItemInMainHand(new ItemStack(Material.AIR));
                         Inventory einv = Bukkit.createInventory(p, InventoryType.FURNACE, ChatColor.LIGHT_PURPLE + "" + ChatColor.MAGIC + "abc" + ChatColor.RESET + ChatColor.DARK_PURPLE
                                 + " Runecrafting " + ChatColor.LIGHT_PURPLE + "" + ChatColor.MAGIC + "cba");
                         einv.setContents(new ItemStack[] { new ItemStack(Material.AIR), i, new ItemStack(Material.AIR) });
@@ -515,8 +489,8 @@ public class CEListener implements Listener {
         // Sign shop
         if (e.getClickedBlock() != null && e.getClickedBlock().getType().toString().contains("SIGN"))
             if (((Sign) e.getClickedBlock().getState()).getLine(0).equals("[CustomEnchant]")) {
-                if (Main.hasEconomy)
-                    if (p.getItemInHand().getType() != Material.AIR) {
+                if (Main.hasEconomy) {
+                    if (p.getInventory().getItemInMainHand().getType() != Material.AIR) {
                         Sign sign = ((Sign) e.getClickedBlock().getState());
                         CEnchantment ce = EnchantManager.getEnchantment(sign.getLine(1));
                         if (ce == null)
@@ -528,7 +502,7 @@ public class CEListener implements Listener {
                         if (ce == null)
                             return;
 
-                        ItemStack inHand = p.getItemInHand();
+                        ItemStack inHand = p.getInventory().getItemInMainHand();
                         if (!Tools.isApplicable(inHand, ce)) {
                             p.sendMessage(ChatColor.RED + "This enchantment can not be applied to this item.");
                             return;
@@ -556,8 +530,8 @@ public class CEListener implements Listener {
                                 if (EnchantManager.containsEnchantment(lore.get(i), ce)) {
                                     int newLevel = EnchantManager.getLevel(lore.get(i)) + 1;
                                     if (newLevel <= ce.getEnchantmentMaxLevel()) {
-                                        if (Main.econ.getBalance(p.getName()) >= cost) {
-                                            EconomyResponse ecr = Main.econ.withdrawPlayer(p.getName(), cost);
+                                        if (Main.econ.getBalance(p) >= cost) {
+                                            EconomyResponse ecr = Main.econ.withdrawPlayer(p, cost);
                                             if (ecr.transactionSuccess()) {
                                                 p.sendMessage(ChatColor.GREEN + "Upgraded enchantment " + ce.getDisplayName() + ChatColor.GREEN + " for " + ChatColor.WHITE + cost + " "
                                                         + ((cost == 1) ? Main.econ.currencyNameSingular() : Main.econ.currencyNamePlural()) + ChatColor.GREEN + ".");
@@ -581,8 +555,8 @@ public class CEListener implements Listener {
                                 }
                         }
 
-                        if (Main.econ.getBalance(p.getName()) >= cost) {
-                            EconomyResponse ecr = Main.econ.withdrawPlayer(p.getName(), cost);
+                        if (Main.econ.getBalance(p) >= cost) {
+                            EconomyResponse ecr = Main.econ.withdrawPlayer(p, cost);
                             if (ecr.transactionSuccess())
                                 p.sendMessage(ChatColor.GREEN + "Bought enchantment " + ce.getDisplayName() + ChatColor.GREEN + " for " + ChatColor.WHITE + cost + " "
                                         + ((cost == 1) ? Main.econ.currencyNameSingular() : Main.econ.currencyNamePlural()) + ChatColor.GREEN + ".");
@@ -607,6 +581,7 @@ public class CEListener implements Listener {
                         p.sendMessage(ChatColor.RED + "You do not have an item in your hand.");
                         return;
                     }
+                }
             }
 
     }

@@ -21,6 +21,7 @@ package com.taiter.ce.CItems;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
@@ -76,7 +77,7 @@ public class AssassinsBlade extends CItem {
 				  e.setDamage(e.getDamage() * AmbushDmgMultiplier);
 				  player.removeMetadata("ce.assassin", main);
 				  player.removePotionEffect(PotionEffectType.INVISIBILITY);
-				  EffectManager.playSound(e.getEntity().getLocation(), "BLOCK_PISTON_EXTEND", 0.4f, 0.1f);
+				  EffectManager.playSound(e.getEntity().getLocation(), Sound.BLOCK_PISTON_EXTEND, 0.4f, 0.1f);
 				  player.addPotionEffect(new PotionEffect(PotionEffectType.WEAKNESS, WeaknessLength, WeaknessLevel, false), true);
 				  player.sendMessage(ChatColor.GRAY + "" + ChatColor.ITALIC + "You are no longer hidden!");
 		   }

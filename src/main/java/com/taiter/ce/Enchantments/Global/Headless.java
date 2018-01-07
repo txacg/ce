@@ -1,20 +1,15 @@
 package com.taiter.ce.Enchantments.Global;
 
+import com.taiter.ce.EffectManager;
+import com.taiter.ce.Enchantments.CEnchantment;
 import org.bukkit.Material;
-import org.bukkit.entity.Creeper;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
-import org.bukkit.entity.Skeleton;
-import org.bukkit.entity.Skeleton.SkeletonType;
-import org.bukkit.entity.Zombie;
+import org.bukkit.Sound;
+import org.bukkit.entity.*;
 import org.bukkit.event.Event;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.scheduler.BukkitRunnable;
-
-import com.taiter.ce.EffectManager;
-import com.taiter.ce.Enchantments.CEnchantment;
 
 public class Headless extends CEnchantment {
 
@@ -35,17 +30,21 @@ public class Headless extends CEnchantment {
             public void run() {
 
                 if (ent.getHealth() <= 0) {
-                    byte type = 3;
-
-                    if (ent instanceof Skeleton) {
+                    byte type = -1;
+                    if (ent instanceof Player) {
+                        type = 3;
+                    } else if (ent instanceof WitherSkeleton) {
+                        type = 1;
+                    } else if (ent instanceof Skeleton) {
                         type = 0;
-                        if (((Skeleton) ent).getSkeletonType().equals(SkeletonType.WITHER))
-                            type = 1;
-                    } else if (ent instanceof Zombie)
+                    } else if (ent instanceof Zombie) {
                         type = 2;
-                    else if (ent instanceof Creeper)
+                    } else if (ent instanceof Creeper) {
                         type = 4;
-
+                    }
+                    if (type < 0) {
+                        return;
+                    }
                     ItemStack skull = new ItemStack(Material.SKULL_ITEM, 1, type);
                     if (type == 3) {
                         SkullMeta sm = (SkullMeta) skull.getItemMeta();
@@ -53,7 +52,7 @@ public class Headless extends CEnchantment {
                         skull.setItemMeta(sm);
                     }
                     ent.getWorld().dropItem(ent.getLocation(), skull);
-                    EffectManager.playSound(player.getLocation(), "BLOCK_ANVIL_LAND", 0.1f, 1.5f);
+                    EffectManager.playSound(player.getLocation(), Sound.BLOCK_ANVIL_LAND, 0.1f, 1.5f);
                 }
             }
         }.runTaskLater(getPlugin(), 5l);

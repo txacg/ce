@@ -25,6 +25,7 @@ import java.util.Map.Entry;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.block.Block;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -71,7 +72,7 @@ public class IceAspect extends CEnchantment {
 
         if (i < chanceFreeze) {
             ((LivingEntity) event.getEntity()).addPotionEffect(new PotionEffect(PotionEffectType.SLOW, SlowDuration, SlowStrength, false), true);
-            EffectManager.playSound(event.getEntity().getLocation(), "BLOCK_DIG_SNOW", 0.6f, 2f);
+            EffectManager.playSound(event.getEntity().getLocation(), Sound.BLOCK_SNOW_BREAK, 0.6f, 2f);
         }
         if (specialFreeze) {
             if (i < chanceSpecialFreeze) {

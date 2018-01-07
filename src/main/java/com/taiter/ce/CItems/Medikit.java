@@ -21,7 +21,7 @@ package com.taiter.ce.CItems;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
-import org.bukkit.entity.Damageable;
+import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
@@ -44,12 +44,12 @@ public class Medikit extends CItem {
 	@Override
 	public boolean effect(Event event, Player player) {
 		if(event instanceof PlayerInteractEvent) {
-				double maxHealth = ((Damageable) player).getMaxHealth();
-				if(((Damageable) player).getHealth() != maxHealth) {
-					if(((Damageable) player).getHealth() + HealAmount >= maxHealth)
+			double maxHealth = player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue();
+				if(player.getHealth() != maxHealth) {
+					if(player.getHealth() + HealAmount >= maxHealth)
 						player.setHealth(maxHealth);
 					else
-						player.setHealth(((Damageable) player).getHealth() + HealAmount);
+						player.setHealth(player.getHealth() + HealAmount);
 					return true;
 				} else
 					player.sendMessage(ChatColor.RED + "You do not have any wounds to apply the Medikit to!");
@@ -67,12 +67,12 @@ public class Medikit extends CItem {
 			}
 			
 			if(toHeal != null) {
-				double maxHealth = ((Damageable) toHeal).getMaxHealth();
-				if(((Damageable) toHeal).getHealth() != maxHealth) {
-					if(((Damageable) toHeal).getHealth() + HealAmount >= maxHealth)
+				double maxHealth = toHeal.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue();
+				if(toHeal.getHealth() != maxHealth) {
+					if(toHeal.getHealth() + HealAmount >= maxHealth)
 						toHeal.setHealth(maxHealth);
 					else
-						toHeal.setHealth(((Damageable) toHeal).getHealth() + HealAmount);
+						toHeal.setHealth(toHeal.getHealth() + HealAmount);
 					player.sendMessage(ChatColor.GREEN + "You have healed " + toHeal.getName() + " using the Medikit!");
 					toHeal.sendMessage(ChatColor.GREEN + player.getName() + " has used a Medikit to heal you!");
 					return true;

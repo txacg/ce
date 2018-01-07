@@ -1,5 +1,6 @@
 package com.taiter.ce.Enchantments.Global;
 
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -30,7 +31,7 @@ public class Block extends CEnchantment {
 		PlayerInteractEvent event = (PlayerInteractEvent) e;
 		final Player owner = event.getPlayer();
 
-		EffectManager.playSound(event.getPlayer().getLocation(), "BLOCK_ANVIL_LAND", 0.8f, 1);
+		EffectManager.playSound(event.getPlayer().getLocation(), Sound.BLOCK_ANVIL_LAND, 0.8f, 1);
 		new BukkitRunnable() {
 
 			PotionEffect	resistance	= new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 20, strength + level);

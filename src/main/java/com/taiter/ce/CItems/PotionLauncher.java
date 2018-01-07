@@ -18,11 +18,7 @@ package com.taiter.ce.CItems;
 * along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-import org.bukkit.ChatColor;
-import org.bukkit.Effect;
-import org.bukkit.GameMode;
-import org.bukkit.Location;
-import org.bukkit.Material;
+import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.ThrownPotion;
 import org.bukkit.event.Event;
@@ -48,7 +44,7 @@ public class PotionLauncher extends CItem {
         Location loc = player.getLocation();
         if (potion != null && potion.getType().toString().contains("POTION")) {
             ThrownPotion tp = player.launchProjectile(ThrownPotion.class);
-            EffectManager.playSound(loc, "ENTITY_GENERIC_EXPLODE", 0.5f, 2f);
+            EffectManager.playSound(loc, Sound.ENTITY_GENERIC_EXPLODE, 0.5f, 2f);
 
             try {
                 tp.setItem(potion);

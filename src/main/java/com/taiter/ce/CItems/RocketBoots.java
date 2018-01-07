@@ -21,11 +21,7 @@ package com.taiter.ce.CItems;
 
 import java.util.List;
 
-import org.bukkit.ChatColor;
-import org.bukkit.Effect;
-import org.bukkit.GameMode;
-import org.bukkit.Location;
-import org.bukkit.Material;
+import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -84,7 +80,7 @@ public class RocketBoots extends CItem {
 						im.setLore(lore);
 						player.sendMessage(ChatColor.GRAY + "Out of Fuel");
 						player.updateInventory();
-						EffectManager.playSound(player.getLocation(), "ENTITY_BAT_TAKEOFF", 0.2f, 0f);
+						EffectManager.playSound(player.getLocation(), Sound.ENTITY_BAT_TAKEOFF, 0.2f, 0f);
 						return false;
 					} else {
 						rocketBoots.setDurability((short) (rocketBoots.getDurability() + 1));
@@ -97,7 +93,7 @@ public class RocketBoots extends CItem {
 					player.setVelocity(player.getLocation().getDirection().setY(0.5));
 					player.getWorld().playEffect(player.getLocation(), Effect.MOBSPAWNER_FLAMES, 10);
 					player.getWorld().playEffect(player.getLocation(), Effect.SMOKE, 40);
-					EffectManager.playSound(player.getLocation(), "BLOCK_FIRE_AMBIENT", 0.3f, 2f);
+					EffectManager.playSound(player.getLocation(), Sound.BLOCK_FIRE_AMBIENT, 0.3f, 2f);
 					if(player.getGameMode().equals(GameMode.CREATIVE)) 
 						return false;
 					
@@ -127,7 +123,7 @@ public class RocketBoots extends CItem {
 				}
 			}
 		} else {
-			rocketBoots = player.getItemInHand();
+			rocketBoots = player.getInventory().getItemInMainHand();
 			final ItemMeta im = rocketBoots.getItemMeta();
 			List<String> lore = im.getLore();
 			e.setCancelled(true);
@@ -149,13 +145,13 @@ public class RocketBoots extends CItem {
 					
 					@Override
 					public void run() {
-						ItemStack hand = player.getItemInHand();
+						ItemStack hand = player.getInventory().getItemInMainHand();
 						if(hand.equals(current)) {
 							if(hand.getDurability() == 0) {
 								removeLock(player);
 								player.getWorld().playEffect(player.getLocation(), Effect.CLICK2, 1000);
 								hand.setItemMeta(im);
-								player.setItemInHand(hand);
+								player.getInventory().setItemInMainHand(hand);
 								this.cancel();
 							} else {
 								hand.setDurability((short) (hand.getDurability() - 1));
@@ -181,7 +177,7 @@ public class RocketBoots extends CItem {
 				}
 				
 				im.setLore(lore);
-				player.getItemInHand().setItemMeta(im);
+				player.getInventory().getItemInMainHand().setItemMeta(im);
 				player.getWorld().playEffect(player.getLocation(), Effect.CLICK1, 5);
 				player.sendMessage(newStateMsg);
 					

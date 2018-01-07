@@ -22,6 +22,7 @@ package com.taiter.ce.CItems;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -67,9 +68,9 @@ public class ThorsAxe extends CItem {
 						if(loc.getBlock().getType().equals(Material.AIR) && Tools.checkWorldGuard(loc, player, "PVP", false)) 
 							loc.getBlock().setType(Material.FIRE);
 					
-						EffectManager.playSound(e.getClickedBlock().getLocation(), "ENTITY_ENDERDRAGON_GROWL", 0.75f, 1f);
+						EffectManager.playSound(e.getClickedBlock().getLocation(), Sound.ENTITY_ENDERDRAGON_GROWL, 0.75f, 1f);
 					
-						player.getItemInHand().setDurability((short) (player.getItemInHand().getDurability() + 1));
+						player.getInventory().getItemInMainHand().setDurability((short) (player.getInventory().getItemInMainHand().getDurability() + 1));
 					
 						new BukkitRunnable() {
 							@Override

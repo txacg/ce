@@ -24,7 +24,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.Effect;
 import org.bukkit.Material;
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
@@ -57,10 +57,10 @@ public class Powergloves extends CItem {
 			e.setCancelled(true);
 			final Entity clicked = e.getRightClicked();
 			if(!player.hasMetadata("ce." + getOriginalName()))
-				if(!clicked.getType().equals(EntityType.PAINTING) && !clicked.getType().equals(EntityType.ITEM_FRAME) && clicked.getPassenger() != player && player.getPassenger() == null) {
+				if(clicked instanceof LivingEntity && !clicked.isDead() && !clicked.getPassengers().contains(player) && player.getPassengers().isEmpty()) {
 					player.setMetadata("ce." + getOriginalName(), new FixedMetadataValue(main, false));
 
-					player.setPassenger(clicked);
+					player.addPassenger(clicked);
 
 					player.getWorld().playEffect(player.getLocation(), Effect.ZOMBIE_CHEW_IRON_DOOR, 10);
 
@@ -77,12 +77,12 @@ public class Powergloves extends CItem {
 					new BukkitRunnable() {
 
 						int			GrabTime	= MaxGrabtime;
-						ItemStack	current		= player.getItemInHand();
+						ItemStack	current		= player.getInventory().getItemInMainHand();
 
 						@Override
 						public void run() {
-							if(current.equals(player.getItemInHand())) {
-								current = player.getItemInHand();
+							if(player.isOnline() && !player.isDead() && current.equals(player.getInventory().getItemInMainHand())) {
+								current = player.getInventory().getItemInMainHand();
 							if(GrabTime > 0) {
 								if(!player.hasMetadata("ce." + getOriginalName())) {
 									this.cancel();
@@ -107,14 +107,15 @@ public class Powergloves extends CItem {
 				}
 		} else if(event instanceof PlayerInteractEvent) {
 			if(player.hasMetadata("ce." + getOriginalName()) && player.getMetadata("ce." + getOriginalName()).get(0).asBoolean())
-					if(player.getPassenger() != null) {
-						Entity passenger = player.getPassenger();
-						player.getPassenger().leaveVehicle();
+				if (!player.getPassengers().isEmpty()) {
+					for (Entity passenger : player.getPassengers()) {
+						passenger.leaveVehicle();
 						passenger.setVelocity(player.getLocation().getDirection().multiply(ThrowSpeedMultiplier));
 						player.getWorld().playEffect(player.getLocation(), Effect.ZOMBIE_DESTROY_DOOR, 10);
 						player.removeMetadata("ce." + getOriginalName(), main);
-						return true;
 					}
+					return true;
+				}
 		}
 		return false;
 	}

@@ -19,14 +19,13 @@ package com.taiter.ce.Enchantments.Bow;
 */
 
 
-
+import com.taiter.ce.Enchantments.CEnchantment;
 import org.bukkit.Effect;
+import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.Event;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.inventory.ItemStack;
-
-import com.taiter.ce.Enchantments.CEnchantment;
 
 
 
@@ -46,12 +45,10 @@ public class Healing extends CEnchantment {
 		
 
 		double newHealth = target.getHealth()+event.getDamage() + level;
-		
-		if(newHealth >= target.getMaxHealth())
-			newHealth = target.getMaxHealth();
-		target.setHealth(newHealth);
+		double maxHealth = target.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue();
+		target.setHealth(newHealth >= maxHealth ? maxHealth : newHealth);
 		event.setDamage(0);
-		target.getWorld().playEffect(target.getLocation(), Effect.POTION_BREAK, 10);
+		target.getWorld().playEffect(target.getLocation(), Effect.POTION_BREAK, 16262179);// potion color
 		}
 	}
 

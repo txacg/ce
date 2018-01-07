@@ -1,5 +1,6 @@
 package com.taiter.ce.Enchantments.Global;
 
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
@@ -29,7 +30,7 @@ public class Aerial extends CEnchantment {
 		
 		event.setDamage(event.getDamage() * (1 + DamageIncreasePercentage * level));
 
-		EffectManager.playSound(player.getLocation(), "ENTITY_BAT_TAKEOFF", 0.1f, 0.1f);
+		EffectManager.playSound(player.getLocation(), Sound.ENTITY_BAT_TAKEOFF, 0.1f, 0.1f);
 	}
 
 	@Override

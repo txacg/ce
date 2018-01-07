@@ -1,5 +1,6 @@
 package com.taiter.ce.Enchantments.Global;
 
+import org.bukkit.Sound;
 import org.bukkit.entity.Damageable;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -33,7 +34,7 @@ public class Deathbringer extends CEnchantment {
 		
 		if(currentHealth > trueDamage) {
 			((Damageable) ent).setHealth(currentHealth-trueDamage);
-			EffectManager.playSound(player.getLocation(), "ENTITY_ENDERDRAGON_GROWL", 0.1f, 0.1f);
+			EffectManager.playSound(player.getLocation(), Sound.ENTITY_ENDERDRAGON_GROWL, 0.1f, 0.1f);
 		}
 		
 
