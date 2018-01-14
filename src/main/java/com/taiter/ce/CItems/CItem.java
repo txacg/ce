@@ -98,9 +98,11 @@ public abstract class CItem extends CBasic {
     // Cooldown
 
     public boolean getHasCooldown(Player p) {
-        if (cooldown.contains(p))
+        if (cooldown.contains(p)) {
             return true;
-        return false;
+        } else {
+            return false;
+        }
     }
 
     public void generateCooldown(final Player p, long cooldownT) {
@@ -111,6 +113,8 @@ public abstract class CItem extends CBasic {
                 @Override
                 public void run() {
                     cooldown.remove(p);
+                    p.sendMessage("§2Your " + getDisplayName() + "§2's cooldown is over！");
+                    this.cancel();
                 }
             }.runTaskLater(main, cooldownT);
         }

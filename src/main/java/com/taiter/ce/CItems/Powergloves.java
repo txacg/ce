@@ -29,7 +29,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -37,8 +36,11 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 public class Powergloves extends CItem {
 
+	/* 投擲速度倍率 */
 	int	ThrowSpeedMultiplier;
+	/* 舉起後多久可以投擲 */
 	int	ThrowDelayAfterGrab;
+	/* 最大舉起時間 */
 	int	MaxGrabtime;
 
 	public Powergloves(String originalName, ChatColor color, String lDescription, long lCooldown, Material mat) {
@@ -52,11 +54,18 @@ public class Powergloves extends CItem {
 
 	@Override
 	public boolean effect(Event event, final Player player) {
+
 		if(event instanceof PlayerInteractEntityEvent) {
 			PlayerInteractEntityEvent e = (PlayerInteractEntityEvent) event;
 			e.setCancelled(true);
 			final Entity clicked = e.getRightClicked();
+
+			//if(cooldown.contains(player) && player.getPassengers().isEmpty()) player.removeMetadata("ce." + getOriginalName(), main);
+
+			/* 假如玩家沒有Powergloves的Metadata */
 			if(!player.hasMetadata("ce." + getOriginalName()))
+
+				/* 假如目標 [ 是生物實體 & 不是死的 & 自己不是騎乘者 & 沒有騎乘者 ] */
 				if(clicked instanceof LivingEntity && !clicked.isDead() && !clicked.getPassengers().contains(player) && player.getPassengers().isEmpty()) {
 					player.setMetadata("ce." + getOriginalName(), new FixedMetadataValue(main, false));
 
@@ -70,6 +79,13 @@ public class Powergloves extends CItem {
 						public void run() {
 							player.getWorld().playEffect(player.getLocation(), Effect.CLICK2, 10);
 							player.setMetadata("ce." + getOriginalName(), new FixedMetadataValue(main, true));
+
+							if(player.getPassengers().get(0).getCustomName() == null){
+								player.sendMessage("You catched " + player.getPassengers().get(0).getName() + " ！ Right click to throw it！");
+							} else {
+								player.sendMessage("You catched " + player.getPassengers().get(0).getCustomName() + " ！ Right click to throw it！");
+							}
+
 							this.cancel();
 						}
 					}.runTaskLater(main, ThrowDelayAfterGrab);
@@ -77,36 +93,45 @@ public class Powergloves extends CItem {
 					new BukkitRunnable() {
 
 						int			GrabTime	= MaxGrabtime;
-						ItemStack	current		= player.getInventory().getItemInMainHand();
+						//ItemStack	current		= player.getInventory().getItemInMainHand();
 
 						@Override
 						public void run() {
-							if(player.isOnline() && !player.isDead() && current.equals(player.getInventory().getItemInMainHand())) {
-								current = player.getInventory().getItemInMainHand();
-							if(GrabTime > 0) {
-								if(!player.hasMetadata("ce." + getOriginalName())) {
+							if(player.isOnline() && !player.isDead() && !player.getPassengers().isEmpty()) {
+
+								if(GrabTime > 0) {
+									if(!player.hasMetadata("ce." + getOriginalName())) {
+										this.cancel();
+									}
+									GrabTime--;
+								} else if(GrabTime <= 0) {
+									if(player.hasMetadata("ce." + getOriginalName())) {
+										player.getWorld().playEffect(player.getLocation(), Effect.CLICK1, 10);
+										player.removeMetadata("ce." + getOriginalName(), main);
+										generateCooldown(player, getCooldown());
+
+										if(player.getPassengers().get(0).getCustomName() == null){
+											player.sendMessage("§4Oh！The §f" + player.getPassengers().get(0).getName() + " §4has run off！");
+										} else {
+											player.sendMessage("§4Oh！The §f" + player.getPassengers().get(0).getCustomName() + " §4has run off！");
+										}
+									}
+									clicked.leaveVehicle();
 									this.cancel();
 								}
-								GrabTime--;
-							} else if(GrabTime <= 0) {
+						  	} else if(!player.isOnline() || player.isDead() || player.getPassengers().isEmpty()){
 								if(player.hasMetadata("ce." + getOriginalName())) {
-									player.getWorld().playEffect(player.getLocation(), Effect.CLICK1, 10);
 									player.removeMetadata("ce." + getOriginalName(), main);
 									generateCooldown(player, getCooldown());
+									clicked.leaveVehicle();
+									this.cancel();
 								}
-								clicked.leaveVehicle();
-								this.cancel();
-							}
-						  } else {
-							  player.removeMetadata("ce." + getOriginalName(), main);
-							  generateCooldown(player, getCooldown());
-							  this.cancel();
-						  }
+						  	}
 						}
 					}.runTaskTimer(main, 0l, 10l);
 				}
 		} else if(event instanceof PlayerInteractEvent) {
-			if(player.hasMetadata("ce." + getOriginalName()) && player.getMetadata("ce." + getOriginalName()).get(0).asBoolean())
+			if(player.hasMetadata("ce." + getOriginalName()) && player.getMetadata("ce." + getOriginalName()).get(0).asBoolean()) {
 				if (!player.getPassengers().isEmpty()) {
 					for (Entity passenger : player.getPassengers()) {
 						passenger.leaveVehicle();
@@ -116,7 +141,9 @@ public class Powergloves extends CItem {
 					}
 					return true;
 				}
+			}
 		}
+
 		return false;
 	}
 
