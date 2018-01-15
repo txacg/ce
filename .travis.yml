@@ -30,3 +30,8 @@ deploy:
   prerelease: true
   api_key: $GITHUB_DEPLOY_KEY
   file: ./ce-v$VERSION_STRING.jar
+ 
+branches:
+  except:
+  - "/^*-v[0-9]/"
+  - "/^*-mc/"
