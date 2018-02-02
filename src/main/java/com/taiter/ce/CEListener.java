@@ -87,26 +87,30 @@ public class CEListener implements Listener {
     // PREVENTION of taking items out
     @EventHandler(priority = EventPriority.HIGHEST)
     public void inventoryMenuPrevention(InventoryDragEvent event) {
-        if (event.getView().getTopInventory().getTitle().startsWith("CE"))
-            event.setCancelled(true);
-        else if (useRuneCrafting)
-            if (event.getView().getTopInventory().getName().equals(
-                    ChatColor.LIGHT_PURPLE + "" + ChatColor.MAGIC + "abc" + ChatColor.RESET + ChatColor.DARK_PURPLE + " Runecrafting " + ChatColor.LIGHT_PURPLE + "" + ChatColor.MAGIC + "cba")) {
-                CEventHandler.updateRunecraftingInventory(event.getInventory());
-                return;
+        if (event.getView().getTopInventory().getHolder() instanceof CeInventoryHolder) {
+            if (event.getView().getTopInventory().getTitle().startsWith("CE")) {
+                event.setCancelled(true);
+            } else if (useRuneCrafting) {
+                if (event.getView().getTopInventory().getName().equals(
+                        ChatColor.LIGHT_PURPLE + "" + ChatColor.MAGIC + "abc" + ChatColor.RESET + ChatColor.DARK_PURPLE + " Runecrafting " + ChatColor.LIGHT_PURPLE + "" + ChatColor.MAGIC + "cba")) {
+                    CEventHandler.updateRunecraftingInventory(event.getInventory());
+                    return;
+                }
             }
+        }
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void inventoryMenuPrevention(InventoryCreativeEvent event) {
-        if (event.getView().getTopInventory().getTitle().startsWith("CE"))
+        if (event.getView().getTopInventory().getHolder() instanceof CeInventoryHolder)
             event.setCancelled(true);
     }
     // PREVENTION
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void inventoryClose(InventoryCloseEvent event) {
-        if (event.getInventory().getName()
+        if (event.getInventory().getHolder() instanceof CeInventoryHolder
+                && event.getInventory().getName()
                 .equals(ChatColor.LIGHT_PURPLE + "" + ChatColor.MAGIC + "abc" + ChatColor.RESET + ChatColor.DARK_PURPLE + " Runecrafting " + ChatColor.LIGHT_PURPLE + "" + ChatColor.MAGIC + "cba")) {
             ItemStack[] contents = event.getInventory().getContents();
             HumanEntity p = event.getPlayer();
@@ -129,9 +133,10 @@ public class CEListener implements Listener {
     public void inventoryMenu(final InventoryClickEvent event) {
         if (event.getSlot() == -999 || event.getSlot() == -1) //No inventory was clicked
             return;
-        
+
         if (useRuneCrafting)
-            if (event.getView().getTopInventory().getName().equals(
+            if (event.getView().getTopInventory().getHolder() instanceof CeInventoryHolder
+                    && event.getView().getTopInventory().getName().equals(
                     ChatColor.LIGHT_PURPLE + "" + ChatColor.MAGIC + "abc" + ChatColor.RESET + ChatColor.DARK_PURPLE + " Runecrafting " + ChatColor.LIGHT_PURPLE + "" + ChatColor.MAGIC + "cba")) {
                 CEventHandler.handleRunecrafting(event);
                 return;
@@ -160,7 +165,8 @@ public class CEListener implements Listener {
         if (event.getCurrentItem() == null || event.getCurrentItem().getType().equals(Material.AIR))
             return;
 
-        if (event.getView().getTopInventory().getTitle().startsWith("CE")) {
+        if (event.getView().getTopInventory().getHolder() instanceof CeInventoryHolder
+                && event.getView().getTopInventory().getTitle().startsWith("CE")) {
             Inventory topInv = event.getView().getTopInventory();
             final Player p = (Player) event.getWhoClicked();
             ItemStack clickedItem = event.getCurrentItem();
@@ -208,7 +214,7 @@ public class CEListener implements Listener {
                 if (topInv.getTitle().equals(Tools.prefix + "Global") || topInv.getTitle().equals(Tools.prefix + "Bow") || topInv.getTitle().equals(Tools.prefix + "Armor")
                         || topInv.getTitle().equals(Tools.prefix + "Helmet") || topInv.getTitle().equals(Tools.prefix + "Boots") || topInv.getTitle().equals(Tools.prefix + "Tool"))
                     if (p.isOp() || Tools.checkPermission(EnchantManager.getEnchantment(clickedItem.getItemMeta().getDisplayName()), p)) {
-                        Inventory levelMenu = Bukkit.createInventory(p, 9, Tools.prefix + "Level selection");
+                        Inventory levelMenu = Bukkit.createInventory(new CeInventoryHolder(), 9, Tools.prefix + "Level selection");
 
                         ItemStack backButton = new ItemStack(Material.NETHER_STAR);
 
@@ -477,7 +483,7 @@ public class CEListener implements Listener {
                             return;
                         e.setCancelled(true);
                         p.getInventory().setItemInMainHand(new ItemStack(Material.AIR));
-                        Inventory einv = Bukkit.createInventory(p, InventoryType.FURNACE, ChatColor.LIGHT_PURPLE + "" + ChatColor.MAGIC + "abc" + ChatColor.RESET + ChatColor.DARK_PURPLE
+                        Inventory einv = Bukkit.createInventory(new CeInventoryHolder(), InventoryType.FURNACE, ChatColor.LIGHT_PURPLE + "" + ChatColor.MAGIC + "abc" + ChatColor.RESET + ChatColor.DARK_PURPLE
                                 + " Runecrafting " + ChatColor.LIGHT_PURPLE + "" + ChatColor.MAGIC + "cba");
                         einv.setContents(new ItemStack[] { new ItemStack(Material.AIR), i, new ItemStack(Material.AIR) });
                         p.openInventory(einv);

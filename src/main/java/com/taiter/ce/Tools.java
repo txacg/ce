@@ -96,7 +96,7 @@ public class Tools {
         else if (name.equals("Items"))
             return Main.CEItemMenu;
         else if (name.equals("Runecrafting")) {
-            Inventory einv = Bukkit.createInventory(null, InventoryType.FURNACE,
+            Inventory einv = Bukkit.createInventory(new CeInventoryHolder(), InventoryType.FURNACE,
                     ChatColor.LIGHT_PURPLE + "" + ChatColor.MAGIC + "abc" + ChatColor.RESET + ChatColor.DARK_PURPLE + " Runecrafting " + ChatColor.LIGHT_PURPLE + "" + ChatColor.MAGIC + "cba");
             return einv;
         } else if (name.equals("Global"))
@@ -136,7 +136,7 @@ public class Tools {
     public static Inventory getEnchantmentMenu(Player p, String name) {
         if (!p.isOp() && !p.hasPermission("ce.ench.*")) {
             Inventory lInv = getNextInventory(name);
-            Inventory enchantments = Bukkit.createInventory(null, lInv.getSize(), lInv.getTitle());
+            Inventory enchantments = Bukkit.createInventory(new CeInventoryHolder(), lInv.getSize(), lInv.getTitle());
             enchantments.setContents(lInv.getContents());
             for (int i = 0; i < enchantments.getSize() - 2; i++) {
                 ItemStack checkItem = enchantments.getItem(i);
@@ -167,7 +167,7 @@ public class Tools {
     public static Inventory getItemMenu(Player p) {
         if (!p.isOp() && !p.hasPermission("ce.item.*")) {
             Inventory lInv = Main.CEItemMenu;
-            Inventory items = Bukkit.createInventory(null, lInv.getSize(), lInv.getTitle());
+            Inventory items = Bukkit.createInventory(new CeInventoryHolder(), lInv.getSize(), lInv.getTitle());
             items.setContents(lInv.getContents());
             for (int i = 0; i < items.getSize() - 2; i++) {
                 ItemStack item = items.getItem(i);
@@ -206,7 +206,7 @@ public class Tools {
         String itemPrefix = ChatColor.AQUA + "" + ChatColor.BOLD;
 
         // MAIN MENU
-        Inventory MainMenu = Bukkit.createInventory(null, 9, prefix + "Main Menu");
+        Inventory MainMenu = Bukkit.createInventory(new CeInventoryHolder(), 9, prefix + "Main Menu");
         ItemStack Enchantments = new ItemStack(Material.ENCHANTED_BOOK);
         ItemStack Items = new ItemStack(Material.ENDER_PORTAL_FRAME);
         ItemStack Runecrafting = new ItemStack(Material.ENCHANTMENT_TABLE);
@@ -247,7 +247,7 @@ public class Tools {
         // MAIN MENU
 
         // ENCHANTMENTS MENU
-        Inventory EnchantmentMenu = Bukkit.createInventory(null, 9, prefix + "Enchantments");
+        Inventory EnchantmentMenu = Bukkit.createInventory(new CeInventoryHolder(), 9, prefix + "Enchantments");
         EnchantmentMenu.setItem(8, backButton);
         ItemStack Global = new ItemStack(Material.ENCHANTED_BOOK);
         ItemStack Bow = new ItemStack(Material.BOW);
@@ -290,7 +290,7 @@ public class Tools {
         // ENCHANTMENTS MENU
 
         // SPECIFIC MENUS
-        Inventory ArmorMenu = Bukkit.createInventory(null, 36, prefix + "Armor");
+        Inventory ArmorMenu = Bukkit.createInventory(new CeInventoryHolder(), 36, prefix + "Armor");
         ArmorMenu.setItem(35, backButton);
 
         int current = 0;
@@ -308,7 +308,7 @@ public class Tools {
             }
         Main.CEArmorMenu = ArmorMenu;
 
-        Inventory GlobalMenu = Bukkit.createInventory(null, 36, prefix + "Global");
+        Inventory GlobalMenu = Bukkit.createInventory(new CeInventoryHolder(), 36, prefix + "Global");
         GlobalMenu.setItem(35, backButton);
 
         current = 0;
@@ -326,7 +326,7 @@ public class Tools {
 
         Main.CEGlobalMenu = GlobalMenu;
 
-        Inventory ToolMenu = Bukkit.createInventory(null, 36, prefix + "Tool");
+        Inventory ToolMenu = Bukkit.createInventory(new CeInventoryHolder(), 36, prefix + "Tool");
         ToolMenu.setItem(35, backButton);
 
         current = 0;
@@ -344,7 +344,7 @@ public class Tools {
 
         Main.CEToolMenu = ToolMenu;
 
-        Inventory BowMenu = Bukkit.createInventory(null, 36, prefix + "Bow");
+        Inventory BowMenu = Bukkit.createInventory(new CeInventoryHolder(), 36, prefix + "Bow");
         BowMenu.setItem(35, backButton);
 
         current = 0;
@@ -364,7 +364,7 @@ public class Tools {
 
         Main.CEBowMenu = BowMenu;
 
-        Inventory HelmetMenu = Bukkit.createInventory(null, 36, prefix + "Helmet");
+        Inventory HelmetMenu = Bukkit.createInventory(new CeInventoryHolder(), 36, prefix + "Helmet");
         HelmetMenu.setItem(35, backButton);
 
         current = 0;
@@ -382,7 +382,7 @@ public class Tools {
 
         Main.CEHelmetMenu = HelmetMenu;
 
-        Inventory BootsMenu = Bukkit.createInventory(null, 36, prefix + "Boots");
+        Inventory BootsMenu = Bukkit.createInventory(new CeInventoryHolder(), 36, prefix + "Boots");
         BootsMenu.setItem(35, backButton);
 
         current = 0;
@@ -402,7 +402,7 @@ public class Tools {
         // SPECIFIC MENUS
 
         // ITEM MENU
-        Inventory ItemMenu = Bukkit.createInventory(null, 36, prefix + "Items");
+        Inventory ItemMenu = Bukkit.createInventory(new CeInventoryHolder(), 36, prefix + "Items");
         ItemMenu.setItem(35, backButton);
 
         int currentItemSlot = 0;
