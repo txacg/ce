@@ -476,7 +476,7 @@ public class CeCommand {
                     if (!sender.hasPermission(node) && !sender.hasPermission(requiredPermission) && !sender.isOp())
                         return Error + "You do not have permission to use this command.";
 
-                    Inventory inv = Bukkit.createInventory(p, InventoryType.FURNACE,
+                    Inventory inv = Bukkit.createInventory(new CeInventoryHolder(), InventoryType.FURNACE,
                             ChatColor.LIGHT_PURPLE + "" + ChatColor.MAGIC + "abc" + ChatColor.RESET + ChatColor.DARK_PURPLE + " Runecrafting " + ChatColor.LIGHT_PURPLE + "" + ChatColor.MAGIC + "cba");
                     inv.setContents(new ItemStack[] { new ItemStack(Material.AIR), new ItemStack(Material.AIR), new ItemStack(Material.AIR) });
 

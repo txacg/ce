@@ -18,10 +18,11 @@ package com.taiter.ce.Enchantments.Boots;
 * along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-import java.util.List;
-
+import com.taiter.ce.EffectManager;
+import com.taiter.ce.Enchantments.CEnchantment;
 import org.bukkit.Effect;
 import org.bukkit.Sound;
+import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -30,8 +31,7 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.inventory.ItemStack;
 
-import com.taiter.ce.EffectManager;
-import com.taiter.ce.Enchantments.CEnchantment;
+import java.util.List;
 
 public class Stomp extends CEnchantment {
 
@@ -55,11 +55,15 @@ public class Stomp extends CEnchantment {
                         Player player = (Player) event.getEntity();
                         List<Entity> entities = player.getNearbyEntities(1, 0, 1);
                         if (!entities.isEmpty()) {
+                            boolean hasLivingEntity = false;
                             for (Entity ent : entities) {
-                                if (ent instanceof LivingEntity) {
+                                if (ent instanceof LivingEntity && !(ent instanceof ArmorStand)) {
+                                    hasLivingEntity = true;
                                     ((LivingEntity) ent).damage(event.getDamage() / damageApplicationFraction, player);
-
                                 }
+                            }
+                            if (!hasLivingEntity) {
+                                return;
                             }
                             player.getWorld().playEffect(player.getLocation(), Effect.ZOMBIE_DESTROY_DOOR, 5);
                             EffectManager.playSound(player.getLocation(), Sound.ENTITY_GENERIC_EXPLODE, 1f, 2f);

@@ -15,4 +15,4 @@ Custom Enchantments requires the following libraries:
 * Bukkit / Spigot, independent of the version
 * Vault (http://dev.bukkit.org/bukkit-plugins/vault)
 * Worldedit (http://dev.bukkit.org/bukkit-plugins/worldedit/)
-* WorldGuard, with a Version below 6.0 (http://dev.bukkit.org/bukkit-plugins/worldguard)
+* WorldGuard 6.2 (http://dev.bukkit.org/bukkit-plugins/worldguard)
