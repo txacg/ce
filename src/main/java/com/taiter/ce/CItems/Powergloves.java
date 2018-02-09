@@ -79,13 +79,13 @@ public class Powergloves extends CItem {
 						public void run() {
 							player.getWorld().playEffect(player.getLocation(), Effect.CLICK2, 10);
 							player.setMetadata("ce." + getOriginalName(), new FixedMetadataValue(main, true));
-
-							if(player.getPassengers().get(0).getCustomName() == null){
-								player.sendMessage("You catched " + player.getPassengers().get(0).getName() + " ！ Right click to throw it！");
-							} else {
-								player.sendMessage("You catched " + player.getPassengers().get(0).getCustomName() + " ！ Right click to throw it！");
+							if (!player.getPassengers().isEmpty()) {
+								if (player.getPassengers().get(0).getCustomName() == null) {
+									player.sendMessage("You catched " + player.getPassengers().get(0).getName() + "! Right click to throw it!");
+								} else {
+									player.sendMessage("You catched " + player.getPassengers().get(0).getCustomName() + "! Right click to throw it!");
+								}
 							}
-
 							this.cancel();
 						}
 					}.runTaskLater(main, ThrowDelayAfterGrab);
@@ -109,14 +109,17 @@ public class Powergloves extends CItem {
 										player.getWorld().playEffect(player.getLocation(), Effect.CLICK1, 10);
 										player.removeMetadata("ce." + getOriginalName(), main);
 										generateCooldown(player, getCooldown());
-
-										if(player.getPassengers().get(0).getCustomName() == null){
-											player.sendMessage("§4Oh！The §f" + player.getPassengers().get(0).getName() + " §4has run off！");
-										} else {
-											player.sendMessage("§4Oh！The §f" + player.getPassengers().get(0).getCustomName() + " §4has run off！");
+										if (!player.getPassengers().isEmpty()) {
+											if (player.getPassengers().get(0).getCustomName() == null) {
+												player.sendMessage("§4Oh!The §f" + player.getPassengers().get(0).getName() + " §4has run off!");
+											} else {
+												player.sendMessage("§4Oh!The §f" + player.getPassengers().get(0).getCustomName() + " §4has run off!");
+											}
 										}
 									}
-									clicked.leaveVehicle();
+									if (clicked.isValid() && player.getPassengers().contains(clicked)) {
+										clicked.leaveVehicle();
+									}
 									this.cancel();
 								}
 							} else if(!player.isOnline() || player.isDead() || player.getPassengers().isEmpty()){
