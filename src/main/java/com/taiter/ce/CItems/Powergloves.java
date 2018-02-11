@@ -1,22 +1,22 @@
 package com.taiter.ce.CItems;
 
 /*
- * This file is part of Custom Enchantments
- * Copyright (C) Taiterio 2015
- *
- * This program is free software: you can redistribute it and/or modify it
- * under the terms of the GNU Lesser General Public License as published by the
- * Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
- * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License
- * for more details.
- *
- * You should have received a copy of the GNU Lesser General Public License
- * along with this program. If not, see <http://www.gnu.org/licenses/>.
- */
+* This file is part of Custom Enchantments
+* Copyright (C) Taiterio 2015
+*
+* This program is free software: you can redistribute it and/or modify it
+* under the terms of the GNU Lesser General Public License as published by the
+* Free Software Foundation, either version 3 of the License, or
+* (at your option) any later version.
+*
+* This program is distributed in the hope that it will be useful, but WITHOUT
+* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+* FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License
+* for more details.
+*
+* You should have received a copy of the GNU Lesser General Public License
+* along with this program. If not, see <http://www.gnu.org/licenses/>.
+*/
 
 
 
@@ -122,14 +122,14 @@ public class Powergloves extends CItem {
 									}
 									this.cancel();
 								}
-							} else if(!player.isOnline() || player.isDead() || player.getPassengers().isEmpty()){
+						  	} else if(!player.isOnline() || player.isDead() || player.getPassengers().isEmpty()){
 								if(player.hasMetadata("ce." + getOriginalName())) {
 									player.removeMetadata("ce." + getOriginalName(), main);
 									generateCooldown(player, getCooldown());
 									clicked.leaveVehicle();
 									this.cancel();
 								}
-							}
+						  	}
 						}
 					}.runTaskTimer(main, 0l, 10l);
 				}

@@ -50,7 +50,7 @@ public class Enlighted extends CEnchantment {
 		owner.addPotionEffect(
 				new PotionEffect(
 						PotionEffectType.REGENERATION,
-						duration * level, 
+						duration * level,
 						strength + level));
 		
 	}

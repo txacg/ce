@@ -113,7 +113,7 @@ public abstract class CItem extends CBasic {
                 @Override
                 public void run() {
                     cooldown.remove(p);
-                    p.sendMessage("§2Your " + getDisplayName() + "§2's cooldown is over！");
+                    p.sendMessage("§2Your " + getDisplayName() + "§2's cooldown is over!");
                     this.cancel();
                 }
             }.runTaskLater(main, cooldownT);
