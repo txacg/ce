@@ -19,7 +19,6 @@ package com.taiter.ce.CItems;
 */
 
 
-
 import org.bukkit.ChatColor;
 import org.bukkit.Effect;
 import org.bukkit.Material;
@@ -52,103 +51,99 @@ public class Powergloves extends CItem {
 		triggers.add(Trigger.INTERACT_ENTITY);
 	}
 
-	@Override
-	public boolean effect(Event event, final Player player) {
+    @Override
+    public boolean effect(Event event, final Player player) {
 
-		if(event instanceof PlayerInteractEntityEvent) {
-			PlayerInteractEntityEvent e = (PlayerInteractEntityEvent) event;
-			e.setCancelled(true);
-			final Entity clicked = e.getRightClicked();
+        if (event instanceof PlayerInteractEntityEvent) {
+            PlayerInteractEntityEvent e = (PlayerInteractEntityEvent) event;
+            e.setCancelled(true);
+            final Entity clicked = e.getRightClicked();
 
-			//if(cooldown.contains(player) && player.getPassengers().isEmpty()) player.removeMetadata("ce." + getOriginalName(), main);
+            /* 假如玩家沒有Powergloves的Metadata */
+            if (!player.hasMetadata("ce." + getOriginalName())) {
 
-			/* 假如玩家沒有Powergloves的Metadata */
-			if(!player.hasMetadata("ce." + getOriginalName()))
+                /* 假如目標 [ 是生物實體 & 不是死的 & 自己不是騎乘者 & 沒有騎乘者 ] */
+                if (clicked instanceof LivingEntity && !clicked.isDead() && !clicked.getPassengers().contains(player) && player.getPassengers().isEmpty() && player.addPassenger(clicked)) {
+                    player.setMetadata("ce." + getOriginalName(), new FixedMetadataValue(main, false));
+                    player.getWorld().playEffect(player.getLocation(), Effect.ZOMBIE_CHEW_IRON_DOOR, 10);
 
-				/* 假如目標 [ 是生物實體 & 不是死的 & 自己不是騎乘者 & 沒有騎乘者 ] */
-				if(clicked instanceof LivingEntity && !clicked.isDead() && !clicked.getPassengers().contains(player) && player.getPassengers().isEmpty()) {
-					player.setMetadata("ce." + getOriginalName(), new FixedMetadataValue(main, false));
+                    new BukkitRunnable() {
 
-					player.addPassenger(clicked);
+                        @Override
+                        public void run() {
+                            if (player.isOnline() && !player.isDead()) {
+                                player.getWorld().playEffect(player.getLocation(), Effect.CLICK2, 10);
+                                if (player.getPassengers().contains(clicked)) {
+                                    player.setMetadata("ce." + getOriginalName(), new FixedMetadataValue(main, true));
+                                    if (clicked.getCustomName() == null) {
+                                        player.sendMessage("You catched " + clicked.getName() + "! Right click to throw it!");
+                                    } else {
+                                        player.sendMessage("You catched " + clicked.getCustomName() + "! Right click to throw it!");
+                                    }
+                                    return;
+                                }
+                            }
+                            player.removeMetadata("ce." + getOriginalName(), main);
+                        }
+                    }.runTaskLater(main, ThrowDelayAfterGrab);
 
-					player.getWorld().playEffect(player.getLocation(), Effect.ZOMBIE_CHEW_IRON_DOOR, 10);
+                    new BukkitRunnable() {
 
-					new BukkitRunnable() {
+                        int GrabTime = MaxGrabtime;
+                        //ItemStack	current		= player.getInventory().getItemInMainHand();
 
-						@Override
-						public void run() {
-							player.getWorld().playEffect(player.getLocation(), Effect.CLICK2, 10);
-							player.setMetadata("ce." + getOriginalName(), new FixedMetadataValue(main, true));
-							if (!player.getPassengers().isEmpty()) {
-								if (player.getPassengers().get(0).getCustomName() == null) {
-									player.sendMessage("You catched " + player.getPassengers().get(0).getName() + "! Right click to throw it!");
-								} else {
-									player.sendMessage("You catched " + player.getPassengers().get(0).getCustomName() + "! Right click to throw it!");
-								}
-							}
-							this.cancel();
-						}
-					}.runTaskLater(main, ThrowDelayAfterGrab);
+                        @Override
+                        public void run() {
+                            if (player.isOnline() && !player.isDead() && player.getPassengers().contains(clicked)) {
 
-					new BukkitRunnable() {
+                                if (GrabTime > 0) {
+                                    if (!player.hasMetadata("ce." + getOriginalName())) {
+                                        this.cancel();
+                                    }
+                                    GrabTime--;
+                                } else if (GrabTime <= 0) {
+                                    this.cancel();
+                                    if (player.hasMetadata("ce." + getOriginalName())) {
+                                        player.removeMetadata("ce." + getOriginalName(), main);
+                                        player.getWorld().playEffect(player.getLocation(), Effect.CLICK1, 10);
+                                        generateCooldown(player, getCooldown());
+                                        if (clicked.isValid()) {
+                                            if (clicked.getCustomName() == null) {
+                                                player.sendMessage("§4Oh! The §f" + clicked.getName() + " §4has run off!");
+                                            } else {
+                                                player.sendMessage("§4Oh! The §f" + clicked.getCustomName() + " §4has run off!");
+                                            }
+                                            clicked.leaveVehicle();
+                                        }
+                                    }
+                                }
+                            } else {
+                                this.cancel();
+                                if (player.hasMetadata("ce." + getOriginalName())) {
+                                    player.removeMetadata("ce." + getOriginalName(), main);
+                                    generateCooldown(player, getCooldown());
+                                }
+                            }
+                        }
+                    }.runTaskTimer(main, 0l, 10l);
+                }
+            }
+        } else if (event instanceof PlayerInteractEvent) {
+            if (player.hasMetadata("ce." + getOriginalName()) && player.getMetadata("ce." + getOriginalName()).get(0).asBoolean()) {
+                if (!player.getPassengers().isEmpty()) {
+                    player.removeMetadata("ce." + getOriginalName(), main);
+                    for (Entity passenger : player.getPassengers()) {
+                        passenger.leaveVehicle();
+                        passenger.setVelocity(player.getLocation().getDirection().multiply(ThrowSpeedMultiplier));
+                        player.getWorld().playEffect(player.getLocation(), Effect.ZOMBIE_DESTROY_DOOR, 10);
+                    }
+                    return true;
+                }
+            }
+        }
 
-						int			GrabTime	= MaxGrabtime;
-						//ItemStack	current		= player.getInventory().getItemInMainHand();
-
-						@Override
-						public void run() {
-							if(player.isOnline() && !player.isDead() && !player.getPassengers().isEmpty()) {
-
-								if(GrabTime > 0) {
-									if(!player.hasMetadata("ce." + getOriginalName())) {
-										this.cancel();
-									}
-									GrabTime--;
-								} else if(GrabTime <= 0) {
-									if(player.hasMetadata("ce." + getOriginalName())) {
-										player.getWorld().playEffect(player.getLocation(), Effect.CLICK1, 10);
-										player.removeMetadata("ce." + getOriginalName(), main);
-										generateCooldown(player, getCooldown());
-										if (!player.getPassengers().isEmpty()) {
-											if (player.getPassengers().get(0).getCustomName() == null) {
-												player.sendMessage("§4Oh!The §f" + player.getPassengers().get(0).getName() + " §4has run off!");
-											} else {
-												player.sendMessage("§4Oh!The §f" + player.getPassengers().get(0).getCustomName() + " §4has run off!");
-											}
-										}
-									}
-									if (clicked.isValid() && player.getPassengers().contains(clicked)) {
-										clicked.leaveVehicle();
-									}
-									this.cancel();
-								}
-						  	} else if(!player.isOnline() || player.isDead() || player.getPassengers().isEmpty()){
-								if(player.hasMetadata("ce." + getOriginalName())) {
-									player.removeMetadata("ce." + getOriginalName(), main);
-									generateCooldown(player, getCooldown());
-									clicked.leaveVehicle();
-									this.cancel();
-								}
-						  	}
-						}
-					}.runTaskTimer(main, 0l, 10l);
-				}
-		} else if(event instanceof PlayerInteractEvent) {
-			if(player.hasMetadata("ce." + getOriginalName()) && player.getMetadata("ce." + getOriginalName()).get(0).asBoolean()) {
-				if (!player.getPassengers().isEmpty()) {
-					for (Entity passenger : player.getPassengers()) {
-						passenger.leaveVehicle();
-						passenger.setVelocity(player.getLocation().getDirection().multiply(ThrowSpeedMultiplier));
-						player.getWorld().playEffect(player.getLocation(), Effect.ZOMBIE_DESTROY_DOOR, 10);
-						player.removeMetadata("ce." + getOriginalName(), main);
-					}
-					return true;
-				}
-			}
-		}
-
-		return false;
-	}
+        return false;
+    }
 
 	@Override
 	public void initConfigEntries() {
